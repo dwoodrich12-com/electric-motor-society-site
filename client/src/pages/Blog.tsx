@@ -27,7 +27,8 @@ export default function Blog() {
       excerpt: 'A comprehensive overview of different electric motor types including AC, DC, stepper, and specialty motors for various applications.',
       date: 'March 26, 2026',
       category: 'Education',
-      image: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663421992935/mFHKDo73JJ655LVTBdqMS7/blog-motor-types-CjSqVKYhtVHs9EqceBGxys.webp'
+      // Using local EMS logo image as a stable placeholder for now
+      image: '/assets/ems-logo.webp'
     }
   ];
 
