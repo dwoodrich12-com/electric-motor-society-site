@@ -78,7 +78,7 @@ export default function BlogPost() {
       date: 'March 26, 2026',
       author: 'Electric Motor Society',
       category: 'Education',
-      image: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663421992935/mFHKDo73JJ655LVTBdqMS7/blog-motor-types-CjSqVKYhtVHs9EqceBGxys.webp',
+      image: '/assets/ems-logo.webp',
       content: `
         <h2>Overview of Electric Motor Types</h2>
         <p>Electric motors come in many varieties, each designed for specific applications and operating conditions. Understanding the differences can help you select the right motor for your needs.</p>
