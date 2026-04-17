@@ -9,7 +9,7 @@ export default function Members() {
     email: '',
     organization: '',
     country: '',
-    donationType: 'one-time'
+    donationType: 'monthly'
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -30,7 +30,7 @@ export default function Members() {
 
       if (response.ok) {
         setSubmitted(true);
-        setFormData({ name: '', email: '', organization: '', country: '', donationType: 'one-time' });
+        setFormData({ name: '', email: '', organization: '', country: '', donationType: 'monthly' });
         setTimeout(() => setSubmitted(false), 5000);
       }
     } catch (error) {
@@ -119,9 +119,9 @@ export default function Members() {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                 {[
-                  { amount: '$25', description: 'Monthly supporter' },
-                  { amount: '$100', description: 'Quarterly contributor', featured: true },
-                  { amount: '$500', description: 'Annual partner' }
+                  { amount: '$25/month', description: 'Monthly supporter' },
+                  { amount: '$100/month', description: 'Monthly contributor', featured: true },
+                  { amount: '$500/month', description: 'Leadership supporter' }
                 ].map((tier, idx) => (
                   <div
                     key={idx}
@@ -244,17 +244,16 @@ export default function Members() {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="one-time">One-time Donation</option>
                   <option value="monthly">Monthly Recurring</option>
-                  <option value="quarterly">Quarterly Recurring</option>
                   <option value="annual">Annual Recurring</option>
+                  <option value="custom">Custom Support Level</option>
                 </select>
               </div>
 
               <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
                 <p className="text-sm text-blue-900">
                   <Heart className="w-4 h-4 inline mr-2" />
-                  After signup, you'll be directed to select your donation amount and payment method (Stripe or PayPal).
+                  After signup, you'll be directed to complete your support using Stripe. PayPal is not used for EMS site payments.
                 </p>
               </div>
 

@@ -42,8 +42,9 @@ export default function Sponsors() {
 
   const sponsorshipTiers = [
     {
-      name: 'Bronze Partner',
-      price: '$5,000',
+      name: 'Supporting Sponsor',
+      price: '$2,500/month',
+      commitment: '12-month commitment',
       benefits: [
         'Company logo on website',
         'Social media recognition',
@@ -52,27 +53,28 @@ export default function Sponsors() {
       ]
     },
     {
-      name: 'Silver Partner',
-      price: '$15,000',
+      name: 'Strategic Sponsor',
+      price: '$5,000/month',
+      commitment: '12-month commitment',
       benefits: [
-        'All Bronze benefits',
+        'All Supporting Sponsor benefits',
         'Speaking opportunity at event',
-        'Booth at annual conference',
         'Quarterly newsletter feature',
-        'Co-branded content'
+        'Co-branded content',
+        'Priority sponsor placement'
       ],
       featured: true
     },
     {
-      name: 'Gold Partner',
-      price: '$30,000',
+      name: 'Flagship Sponsor',
+      price: '$7,500/month',
+      commitment: '12-month commitment',
       benefits: [
-        'All Silver benefits',
-        'Premium booth placement',
-        'Keynote speaking slot',
-        'Research collaboration opportunity',
+        'All Strategic Sponsor benefits',
+        'Premium placement across EMS materials',
+        'Priority collaboration discussions',
         'Custom sponsorship package',
-        'Exclusive networking dinner'
+        'Executive networking access'
       ]
     }
   ];
@@ -175,7 +177,8 @@ export default function Sponsors() {
                     </div>
                   )}
                   <h3 className="text-2xl font-bold text-primary mb-2">{tier.name}</h3>
-                  <p className="text-3xl font-bold text-foreground mb-6">{tier.price}</p>
+                  <p className="text-3xl font-bold text-foreground mb-1">{tier.price}</p>
+                  <p className="text-sm text-foreground/60 mb-6">{tier.commitment}</p>
                   <ul className="space-y-3 mb-8">
                     {tier.benefits.map((benefit, bidx) => (
                       <li key={bidx} className="flex gap-2 items-start">
