@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ArrowRight, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CheckCircle, Loader2 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -14,6 +14,47 @@ export default function Sponsors() {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+  const [checkoutCanceled, setCheckoutCanceled] = useState(false);
+
+  // Check URL params for checkout result
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success') === 'true') {
+      setCheckoutSuccess(true);
+      window.history.replaceState({}, '', '/sponsors');
+    }
+    if (params.get('canceled') === 'true') {
+      setCheckoutCanceled(true);
+      window.history.replaceState({}, '', '/sponsors');
+    }
+  }, []);
+
+  const handleCheckout = async (tierKey: string) => {
+    setCheckoutLoading(tierKey);
+    try {
+      const response = await fetch('/api/stripe/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier: tierKey })
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error('No checkout URL returned:', data);
+        alert('Unable to start checkout. Please contact us directly.');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Unable to start checkout. Please contact us directly.');
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -42,6 +83,7 @@ export default function Sponsors() {
 
   const sponsorshipTiers = [
     {
+      key: 'supporting',
       name: 'Supporting Sponsor',
       price: '$2,500/month',
       commitment: '12-month commitment',
@@ -53,6 +95,7 @@ export default function Sponsors() {
       ]
     },
     {
+      key: 'strategic',
       name: 'Strategic Sponsor',
       price: '$5,000/month',
       commitment: '12-month commitment',
@@ -66,6 +109,7 @@ export default function Sponsors() {
       featured: true
     },
     {
+      key: 'flagship',
       name: 'Flagship Sponsor',
       price: '$7,500/month',
       commitment: '12-month commitment',
@@ -84,6 +128,25 @@ export default function Sponsors() {
       <Header />
 
       <main className="flex-1">
+        {/* Success/Cancel Messages */}
+        {checkoutSuccess && (
+          <div className="bg-green-50 border-b border-green-200 py-4">
+            <div className="container">
+              <div className="flex items-center gap-3 text-green-800">
+                <CheckCircle className="w-5 h-5" />
+                <p className="font-semibold">Thank you for becoming an EMS sponsor! We'll be in touch shortly with next steps.</p>
+              </div>
+            </div>
+          </div>
+        )}
+        {checkoutCanceled && (
+          <div className="bg-yellow-50 border-b border-yellow-200 py-4">
+            <div className="container">
+              <p className="text-yellow-800">Checkout was canceled. Feel free to try again or contact us with questions.</p>
+            </div>
+          </div>
+        )}
+
         {/* Hero Section */}
         <section className="relative py-20 md:py-32 hero-gradient">
           <div className="container">
@@ -187,7 +250,20 @@ export default function Sponsors() {
                       </li>
                     ))}
                   </ul>
-                  <button className="w-full btn-primary">Learn More</button>
+                  <button 
+                    className="w-full btn-primary flex items-center justify-center gap-2"
+                    onClick={() => handleCheckout(tier.key)}
+                    disabled={checkoutLoading === tier.key}
+                  >
+                    {checkoutLoading === tier.key ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      'Become a Sponsor'
+                    )}
+                  </button>
                 </div>
               ))}
             </div>

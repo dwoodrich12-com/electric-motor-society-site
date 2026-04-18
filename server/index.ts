@@ -3,6 +3,8 @@ import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import formsRouter from "./api/forms.js";
+import stripeRouter from "./api/stripe.js";
+import mailchimpRouter from "./api/mailchimp.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,6 +19,8 @@ async function startServer() {
 
   // API Routes
   app.use("/api/forms", formsRouter);
+  app.use("/api/stripe", stripeRouter);
+  app.use("/api/mailchimp", mailchimpRouter);
 
   // Serve static files from dist/public in production
   const staticPath =
