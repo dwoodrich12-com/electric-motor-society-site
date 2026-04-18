@@ -121,15 +121,16 @@ async function sendNotificationEmail(subject: string, body: string) {
   }
 
   try {
-    const response = await fetch('https://api.agentmail.to/v1/messages', {
+    // AgentMail API v0 endpoint: POST /v0/inboxes/{inbox_id}/messages/send
+    const inboxId = encodeURIComponent(AGENTMAIL_FROM);
+    const response = await fetch(`https://api.agentmail.to/v0/inboxes/${inboxId}/messages/send`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${AGENTMAIL_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: AGENTMAIL_FROM,
-        to: NOTIFICATION_EMAIL,
+        to: [NOTIFICATION_EMAIL],
         subject: subject,
         text: body
       }),
@@ -137,7 +138,7 @@ async function sendNotificationEmail(subject: string, body: string) {
 
     if (response.ok) {
       const result = await response.json();
-      console.log(`[AGENTMAIL] Email sent to ${NOTIFICATION_EMAIL}:`, result.id || 'success');
+      console.log(`[AGENTMAIL] Email sent to ${NOTIFICATION_EMAIL}:`, result.message_id || 'success');
       return { success: true };
     } else {
       const error = await response.text();
