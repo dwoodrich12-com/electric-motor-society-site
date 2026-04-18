@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { CheckCircle, Zap, Users, TrendingUp, Heart } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CheckCircle, Zap, Users, TrendingUp, Heart, Loader2 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -12,6 +12,47 @@ export default function Members() {
     donationType: 'monthly'
   });
   const [submitted, setSubmitted] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+  const [checkoutCanceled, setCheckoutCanceled] = useState(false);
+
+  // Check URL params for checkout result
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success') === 'true') {
+      setCheckoutSuccess(true);
+      window.history.replaceState({}, '', '/members');
+    }
+    if (params.get('canceled') === 'true') {
+      setCheckoutCanceled(true);
+      window.history.replaceState({}, '', '/members');
+    }
+  }, []);
+
+  const handleCheckout = async (tierKey: string) => {
+    setCheckoutLoading(tierKey);
+    try {
+      const response = await fetch('/api/stripe/create-member-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier: tierKey })
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error('No checkout URL returned:', data);
+        alert('Unable to start checkout. Please contact us directly.');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Unable to start checkout. Please contact us directly.');
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -38,11 +79,52 @@ export default function Members() {
     }
   };
 
+  const memberTiers = [
+    { 
+      key: 'monthly',
+      amount: '$25/month', 
+      name: 'Monthly Member',
+      description: 'Flexible monthly support'
+    },
+    { 
+      key: 'quarterly',
+      amount: '$100/quarter', 
+      name: 'Silver Member',
+      description: 'Quarterly contributor',
+      featured: true 
+    },
+    { 
+      key: 'yearly',
+      amount: '$500/year', 
+      name: 'Elite Member',
+      description: 'Annual leadership supporter'
+    }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
 
       <main className="flex-1">
+        {/* Success/Cancel Messages */}
+        {checkoutSuccess && (
+          <div className="bg-green-50 border-b border-green-200 py-4">
+            <div className="container">
+              <div className="flex items-center gap-3 text-green-800">
+                <CheckCircle className="w-5 h-5" />
+                <p className="font-semibold">Welcome to Electric Motor Society! Thank you for your membership support.</p>
+              </div>
+            </div>
+          </div>
+        )}
+        {checkoutCanceled && (
+          <div className="bg-yellow-50 border-b border-yellow-200 py-4">
+            <div className="container">
+              <p className="text-yellow-800">Checkout was canceled. Feel free to try again or contact us with questions.</p>
+            </div>
+          </div>
+        )}
+
         {/* Hero Section */}
         <section className="relative py-20 md:py-32 hero-gradient">
           <div className="container">
@@ -109,33 +191,47 @@ export default function Members() {
           </div>
         </section>
 
-        {/* Donations Section */}
+        {/* Membership Tiers */}
         <section className="section-padding">
           <div className="container">
             <h2 className="text-3xl md:text-4xl font-bold text-primary mb-12 text-center">Support Our Mission</h2>
-            <div className="max-w-3xl mx-auto">
-              <p className="text-lg text-foreground/80 mb-8 text-center">
-                Your donations directly support our research initiatives, events, and educational programs. Every contribution helps advance the electric motor industry.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                {[
-                  { amount: '$25/month', description: 'Monthly supporter' },
-                  { amount: '$100/month', description: 'Monthly contributor', featured: true },
-                  { amount: '$500/month', description: 'Leadership supporter' }
-                ].map((tier, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-6 rounded-lg border-2 text-center transition-all ${
-                      tier.featured
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border bg-white hover:shadow-lg'
-                    }`}
+            <p className="text-lg text-foreground/80 mb-8 text-center max-w-3xl mx-auto">
+              Your membership directly supports our research initiatives, events, and educational programs. Every contribution helps advance the electric motor industry.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              {memberTiers.map((tier, idx) => (
+                <div
+                  key={idx}
+                  className={`p-6 rounded-lg border-2 text-center transition-all ${
+                    tier.featured
+                      ? 'border-primary bg-primary/5 shadow-lg scale-105'
+                      : 'border-border bg-white hover:shadow-lg'
+                  }`}
+                >
+                  {tier.featured && (
+                    <div className="bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full inline-block mb-3">
+                      Most Popular
+                    </div>
+                  )}
+                  <p className="text-3xl font-bold text-primary mb-1">{tier.amount}</p>
+                  <p className="font-semibold text-foreground mb-1">{tier.name}</p>
+                  <p className="text-sm text-foreground/70 mb-4">{tier.description}</p>
+                  <button 
+                    className="w-full btn-primary flex items-center justify-center gap-2"
+                    onClick={() => handleCheckout(tier.key)}
+                    disabled={checkoutLoading === tier.key}
                   >
-                    <p className="text-3xl font-bold text-primary mb-2">{tier.amount}</p>
-                    <p className="text-foreground/70">{tier.description}</p>
-                  </div>
-                ))}
-              </div>
+                    {checkoutLoading === tier.key ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      'Join Now'
+                    )}
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -175,12 +271,12 @@ export default function Members() {
         {/* Member Signup Form */}
         <section className="section-padding">
           <div className="container max-w-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-8 text-center">Join EMS Today</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-8 text-center">Questions? Get in Touch</h2>
             
             {submitted && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 text-green-800">
-                <p className="font-semibold">Welcome to Electric Motor Society!</p>
-                <p>We've received your signup. Check your email for next steps.</p>
+                <p className="font-semibold">Thank you for your interest!</p>
+                <p>We've received your information and will be in touch shortly.</p>
               </div>
             )}
 
@@ -236,29 +332,8 @@ export default function Members() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Donation Type</label>
-                <select
-                  name="donationType"
-                  value={formData.donationType}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="monthly">Monthly Recurring</option>
-                  <option value="annual">Annual Recurring</option>
-                  <option value="custom">Custom Support Level</option>
-                </select>
-              </div>
-
-              <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-                <p className="text-sm text-blue-900">
-                  <Heart className="w-4 h-4 inline mr-2" />
-                  After signup, you'll be directed to complete your support using Stripe. PayPal is not used for EMS site payments.
-                </p>
-              </div>
-
               <button type="submit" className="w-full btn-primary">
-                Sign Up & Donate
+                Send Inquiry
               </button>
             </form>
           </div>

@@ -9,7 +9,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 });
 
 // Sponsor tier price mapping
-// These price IDs need to be created in Stripe Dashboard and updated here
 const SPONSOR_TIERS: Record<string, { priceId: string; name: string; amount: number }> = {
   'supporting': {
     priceId: process.env.STRIPE_PRICE_SUPPORTING || '',
@@ -25,6 +24,28 @@ const SPONSOR_TIERS: Record<string, { priceId: string; name: string; amount: num
     priceId: process.env.STRIPE_PRICE_FLAGSHIP || '',
     name: 'Flagship Sponsor',
     amount: 7500
+  }
+};
+
+// Member tier price mapping
+const MEMBER_TIERS: Record<string, { priceId: string; name: string; amount: number; interval: string }> = {
+  'monthly': {
+    priceId: process.env.STRIPE_PRICE_MEMBER_MONTHLY || '',
+    name: 'Monthly Member',
+    amount: 25,
+    interval: 'month'
+  },
+  'quarterly': {
+    priceId: process.env.STRIPE_PRICE_MEMBER_QUARTERLY || '',
+    name: 'Silver Member (Quarterly)',
+    amount: 100,
+    interval: 'quarter'
+  },
+  'yearly': {
+    priceId: process.env.STRIPE_PRICE_MEMBER_YEARLY || '',
+    name: 'Elite Member (Yearly)',
+    amount: 500,
+    interval: 'year'
   }
 };
 
@@ -75,6 +96,61 @@ router.post('/create-checkout-session', async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('[STRIPE] Error creating checkout session:', error);
+    res.status(500).json({ 
+      error: 'Failed to create checkout session',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Create checkout session for member tier
+router.post('/create-member-checkout', async (req: Request, res: Response) => {
+  try {
+    const { tier, successUrl, cancelUrl } = req.body;
+
+    if (!tier || !MEMBER_TIERS[tier]) {
+      return res.status(400).json({ 
+        error: 'Invalid member tier',
+        validTiers: Object.keys(MEMBER_TIERS)
+      });
+    }
+
+    const tierConfig = MEMBER_TIERS[tier];
+
+    if (!tierConfig.priceId) {
+      console.error(`[STRIPE] Missing price ID for member tier: ${tier}`);
+      return res.status(500).json({ 
+        error: 'Stripe price not configured for this member tier',
+        tier 
+      });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price: tierConfig.priceId,
+          quantity: 1,
+        },
+      ],
+      success_url: successUrl || `${req.headers.origin}/members?success=true`,
+      cancel_url: cancelUrl || `${req.headers.origin}/members?canceled=true`,
+      metadata: {
+        tier,
+        tierName: tierConfig.name,
+        memberType: 'member'
+      },
+    });
+
+    console.log(`[STRIPE] Member checkout session created for ${tierConfig.name}:`, session.id);
+
+    res.json({ 
+      url: session.url,
+      sessionId: session.id 
+    });
+  } catch (error) {
+    console.error('[STRIPE] Error creating member checkout session:', error);
     res.status(500).json({ 
       error: 'Failed to create checkout session',
       message: error instanceof Error ? error.message : 'Unknown error'
