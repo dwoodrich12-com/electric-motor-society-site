@@ -1,18 +1,47 @@
 import { Router, Request, Response } from 'express';
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
 
 const router = Router();
 
 // Mailchimp API configuration
 const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY || '';
 const MAILCHIMP_LIST_ID = process.env.MAILCHIMP_LIST_ID || '';
+const AGENTMAIL_API_KEY = process.env.AGENTMAIL_API_KEY || '';
 const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL || 'info@electricmotorsociety.com';
+const AGENTMAIL_FROM = process.env.AGENTMAIL_FROM || 'herman1@agentmail.to';
+
+// Form logs file path
+const FORM_LOGS_PATH = process.env.FORM_LOGS_PATH || '/tmp/ems-form-logs.json';
 
 // Extract datacenter from API key
 const getDatacenter = () => {
   const parts = MAILCHIMP_API_KEY.split('-');
   return parts.length > 1 ? parts[parts.length - 1] : 'us1';
 };
+
+// Helper: Log form submission to JSON file
+function logFormSubmission(formType: string, data: Record<string, unknown>) {
+  const logEntry = {
+    timestamp: new Date().toISOString(),
+    formType,
+    data
+  };
+
+  try {
+    let logs: unknown[] = [];
+    if (fs.existsSync(FORM_LOGS_PATH)) {
+      const content = fs.readFileSync(FORM_LOGS_PATH, 'utf-8');
+      logs = JSON.parse(content);
+    }
+    logs.push(logEntry);
+    fs.writeFileSync(FORM_LOGS_PATH, JSON.stringify(logs, null, 2));
+    console.log(`[FORM LOG] Saved to ${FORM_LOGS_PATH}`);
+  } catch (error) {
+    console.error('[FORM LOG] Error saving:', error);
+  }
+}
 
 // Helper: Subscribe email to Mailchimp with tags
 async function subscribeToMailchimp(email: string, firstName: string, lastName: string, tags: string[], mergeFields?: Record<string, string>) {
@@ -80,24 +109,45 @@ async function subscribeToMailchimp(email: string, firstName: string, lastName: 
   }
 }
 
-// Helper: Send notification email via Mailchimp Transactional or log for now
+// Helper: Send notification email via AgentMail
 async function sendNotificationEmail(subject: string, body: string) {
-  // For now, log the notification. In production, you could use:
-  // - Mailchimp Transactional (Mandrill)
-  // - SendGrid
-  // - AWS SES
-  // - Or forward to a webhook/Zapier
-  
-  console.log('='.repeat(60));
-  console.log('[EMAIL NOTIFICATION]');
-  console.log(`To: ${NOTIFICATION_EMAIL}`);
-  console.log(`Subject: ${subject}`);
-  console.log('Body:');
-  console.log(body);
-  console.log('='.repeat(60));
-  
-  // TODO: Implement actual email sending when SMTP/transactional email is configured
-  return { success: true, logged: true };
+  if (!AGENTMAIL_API_KEY) {
+    console.log('[AGENTMAIL] Not configured, logging only');
+    console.log('='.repeat(60));
+    console.log(`Subject: ${subject}`);
+    console.log(body);
+    console.log('='.repeat(60));
+    return { success: false, reason: 'not_configured' };
+  }
+
+  try {
+    const response = await fetch('https://api.agentmail.to/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${AGENTMAIL_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: AGENTMAIL_FROM,
+        to: NOTIFICATION_EMAIL,
+        subject: subject,
+        text: body
+      }),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log(`[AGENTMAIL] Email sent to ${NOTIFICATION_EMAIL}:`, result.id || 'success');
+      return { success: true };
+    } else {
+      const error = await response.text();
+      console.error('[AGENTMAIL] Error:', error);
+      return { success: false, error };
+    }
+  } catch (error) {
+    console.error('[AGENTMAIL] Exception:', error);
+    return { success: false, error };
+  }
 }
 
 // Member signup form
@@ -105,12 +155,9 @@ router.post('/member-signup', async (req: Request, res: Response) => {
   const { name, email, organization, country, donationType } = req.body;
   
   console.log('[FORM SUBMISSION] Member Signup');
-  console.log('Name:', name);
-  console.log('Email:', email);
-  console.log('Organization:', organization);
-  console.log('Country:', country);
-  console.log('Donation Type:', donationType);
-  console.log('Timestamp:', new Date().toISOString());
+  
+  // Log to file
+  logFormSubmission('member-signup', { name, email, organization, country, donationType });
   
   // Parse name into first/last
   const nameParts = (name || '').trim().split(' ');
@@ -123,7 +170,7 @@ router.post('/member-signup', async (req: Request, res: Response) => {
     COUNTRY: country || ''
   });
 
-  // Send notification email
+  // Send notification email via AgentMail
   await sendNotificationEmail(
     `[EMS] New Member Signup: ${name}`,
     `New member signup received:
@@ -134,7 +181,11 @@ Organization: ${organization || 'Not provided'}
 Country: ${country || 'Not provided'}
 Donation Type: ${donationType}
 
-Submitted: ${new Date().toISOString()}`
+Submitted: ${new Date().toISOString()}
+
+---
+Electric Motor Society
+https://electricmotorsociety.com`
   );
   
   res.json({ success: true, message: 'Member signup received' });
@@ -145,14 +196,9 @@ router.post('/sponsor-inquiry', async (req: Request, res: Response) => {
   const { company, contact, email, phone, region, interestType, message } = req.body;
   
   console.log('[FORM SUBMISSION] Sponsor Inquiry');
-  console.log('Company:', company);
-  console.log('Contact:', contact);
-  console.log('Email:', email);
-  console.log('Phone:', phone);
-  console.log('Region:', region);
-  console.log('Interest Type:', interestType);
-  console.log('Message:', message);
-  console.log('Timestamp:', new Date().toISOString());
+  
+  // Log to file
+  logFormSubmission('sponsor-inquiry', { company, contact, email, phone, region, interestType, message });
   
   // Parse contact name
   const nameParts = (contact || '').trim().split(' ');
@@ -165,7 +211,7 @@ router.post('/sponsor-inquiry', async (req: Request, res: Response) => {
     PHONE: phone || ''
   });
 
-  // Send notification email
+  // Send notification email via AgentMail
   await sendNotificationEmail(
     `[EMS] Sponsor Inquiry: ${company}`,
     `New sponsor inquiry received:
@@ -180,7 +226,11 @@ Interest Type: ${interestType || 'Not specified'}
 Message:
 ${message || 'No message'}
 
-Submitted: ${new Date().toISOString()}`
+Submitted: ${new Date().toISOString()}
+
+---
+Electric Motor Society
+https://electricmotorsociety.com`
   );
   
   res.json({ success: true, message: 'Sponsor inquiry received' });
@@ -191,14 +241,9 @@ router.post('/university-interest', async (req: Request, res: Response) => {
   const { university, department, contact, email, region, collaborationType, message } = req.body;
   
   console.log('[FORM SUBMISSION] University Interest');
-  console.log('University:', university);
-  console.log('Department/Lab:', department);
-  console.log('Contact:', contact);
-  console.log('Email:', email);
-  console.log('Region:', region);
-  console.log('Collaboration Type:', collaborationType);
-  console.log('Message:', message);
-  console.log('Timestamp:', new Date().toISOString());
+  
+  // Log to file
+  logFormSubmission('university-interest', { university, department, contact, email, region, collaborationType, message });
   
   // Parse contact name
   const nameParts = (contact || '').trim().split(' ');
@@ -210,7 +255,7 @@ router.post('/university-interest', async (req: Request, res: Response) => {
     COMPANY: `${university} - ${department}` || ''
   });
 
-  // Send notification email
+  // Send notification email via AgentMail
   await sendNotificationEmail(
     `[EMS] University Interest: ${university}`,
     `New university interest received:
@@ -225,7 +270,11 @@ Collaboration Type: ${collaborationType || 'Not specified'}
 Message:
 ${message || 'No message'}
 
-Submitted: ${new Date().toISOString()}`
+Submitted: ${new Date().toISOString()}
+
+---
+Electric Motor Society
+https://electricmotorsociety.com`
   );
   
   res.json({ success: true, message: 'University interest received' });
@@ -236,17 +285,9 @@ router.post('/motor-quote', async (req: Request, res: Response) => {
   const { name, email, organization, motorType, powerRating, voltage, speed, specifications, message, fileName } = req.body;
   
   console.log('[FORM SUBMISSION] Motor Quote Request');
-  console.log('Name:', name);
-  console.log('Email:', email);
-  console.log('Organization:', organization);
-  console.log('Motor Type:', motorType);
-  console.log('Power Rating:', powerRating);
-  console.log('Voltage:', voltage);
-  console.log('Speed (RPM):', speed);
-  console.log('Specifications:', specifications);
-  console.log('Message:', message);
-  console.log('File Attached:', fileName);
-  console.log('Timestamp:', new Date().toISOString());
+  
+  // Log to file
+  logFormSubmission('motor-quote', { name, email, organization, motorType, powerRating, voltage, speed, specifications, message, fileName });
   
   // Parse name
   const nameParts = (name || '').trim().split(' ');
@@ -258,7 +299,7 @@ router.post('/motor-quote', async (req: Request, res: Response) => {
     COMPANY: organization || ''
   });
 
-  // Send notification email
+  // Send notification email via AgentMail
   await sendNotificationEmail(
     `[EMS] Motor Quote Request: ${name}`,
     `New motor quote request received:
@@ -279,10 +320,29 @@ ${message || 'No message'}
 
 File Attached: ${fileName || 'None'}
 
-Submitted: ${new Date().toISOString()}`
+Submitted: ${new Date().toISOString()}
+
+---
+Electric Motor Society
+https://electricmotorsociety.com`
   );
   
   res.json({ success: true, message: 'Motor quote request received' });
+});
+
+// API endpoint to get form logs (for spreadsheet sync or review)
+router.get('/logs', async (req: Request, res: Response) => {
+  try {
+    if (fs.existsSync(FORM_LOGS_PATH)) {
+      const content = fs.readFileSync(FORM_LOGS_PATH, 'utf-8');
+      const logs = JSON.parse(content);
+      res.json({ success: true, logs });
+    } else {
+      res.json({ success: true, logs: [] });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to read logs' });
+  }
 });
 
 export default router;
