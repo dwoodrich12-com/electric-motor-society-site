@@ -8,8 +8,7 @@ export default function Members() {
     name: '',
     email: '',
     organization: '',
-    country: '',
-    donationType: 'monthly'
+    country: ''
   });
   const [submitted, setSubmitted] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
@@ -71,7 +70,7 @@ export default function Members() {
 
       if (response.ok) {
         setSubmitted(true);
-        setFormData({ name: '', email: '', organization: '', country: '', donationType: 'monthly' });
+        setFormData({ name: '', email: '', organization: '', country: '' });
         setTimeout(() => setSubmitted(false), 5000);
       }
     } catch (error) {

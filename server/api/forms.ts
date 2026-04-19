@@ -151,14 +151,14 @@ async function sendNotificationEmail(subject: string, body: string) {
   }
 }
 
-// Member signup form
+// Member inquiry form (bottom of Members page - NOT checkout)
 router.post('/member-signup', async (req: Request, res: Response) => {
-  const { name, email, organization, country, donationType } = req.body;
+  const { name, email, organization, country } = req.body;
   
-  console.log('[FORM SUBMISSION] Member Signup');
+  console.log('[FORM SUBMISSION] Member Inquiry');
   
   // Log to file
-  logFormSubmission('member-signup', { name, email, organization, country, donationType });
+  logFormSubmission('member-inquiry', { name, email, organization, country });
   
   // Parse name into first/last
   const nameParts = (name || '').trim().split(' ');
@@ -166,21 +166,23 @@ router.post('/member-signup', async (req: Request, res: Response) => {
   const lastName = nameParts.slice(1).join(' ') || '';
 
   // Subscribe to Mailchimp with tags
-  await subscribeToMailchimp(email, firstName, lastName, ['member-signup', `donation-${donationType}`], {
+  await subscribeToMailchimp(email, firstName, lastName, ['member-inquiry'], {
     COMPANY: organization || '',
     COUNTRY: country || ''
   });
 
   // Send notification email via AgentMail
   await sendNotificationEmail(
-    `[EMS] New Member Signup: ${name}`,
-    `New member signup received:
+    `[EMS] Member Inquiry: ${name}`,
+    `New member inquiry received:
 
 Name: ${name}
 Email: ${email}
 Organization: ${organization || 'Not provided'}
 Country: ${country || 'Not provided'}
-Donation Type: ${donationType}
+
+Note: This is an inquiry from the Members page contact form, NOT a completed checkout.
+For actual member signups, check Stripe dashboard.
 
 Submitted: ${new Date().toISOString()}
 
@@ -189,7 +191,7 @@ Electric Motor Society
 https://electricmotorsociety.com`
   );
   
-  res.json({ success: true, message: 'Member signup received' });
+  res.json({ success: true, message: 'Member inquiry received' });
 });
 
 // Sponsor inquiry form
@@ -319,7 +321,8 @@ Motor Specifications:
 Message:
 ${message || 'No message'}
 
-File Attached: ${fileName || 'None'}
+File Mentioned: ${fileName || 'None'}
+(Note: File attachments are not yet supported. If a file was mentioned, please reply to the requester at the email above to request they send it directly.)
 
 Submitted: ${new Date().toISOString()}
 
