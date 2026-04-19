@@ -12,6 +12,7 @@ interface BlogPost {
   category: string;
   featured: boolean;
   image: string;
+  imageAlt: string;
   author: string;
 }
 
@@ -126,7 +127,7 @@ export default function Blog() {
                         <div className="relative h-48 overflow-hidden bg-secondary">
                           <img
                             src={post.image}
-                            alt={post.title}
+                            alt={post.imageAlt || post.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                           {post.featured && (

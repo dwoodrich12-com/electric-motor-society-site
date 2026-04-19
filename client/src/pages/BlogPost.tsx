@@ -13,6 +13,7 @@ interface BlogPostData {
   category: string;
   featured: boolean;
   image: string;
+  imageAlt: string;
   keywords: string[];
   content: string;
 }
@@ -200,7 +201,7 @@ export default function BlogPost() {
         <div className="w-full h-96 overflow-hidden">
           <img
             src={post.image}
-            alt={post.title}
+            alt={post.imageAlt || post.title}
             className="w-full h-full object-cover"
           />
         </div>

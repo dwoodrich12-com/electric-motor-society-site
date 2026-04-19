@@ -12,7 +12,8 @@ const blogPosts = [
     author: 'Electric Motor Society',
     category: 'News',
     featured: true,
-    image: '/assets/ems-logo.webp',
+    image: '/assets/blog/electric-motor-society-professional-membership-organization.webp',
+    imageAlt: 'Electric Motor Society professional membership organization for motor engineers',
     keywords: ['electric motor association', 'professional organization', 'motor engineering'],
     content: `
       <h2>A New Era for Electric Motor Professionals</h2>
@@ -45,7 +46,8 @@ const blogPosts = [
     author: 'Electric Motor Society',
     category: 'Industry',
     featured: true,
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/blog/electric-motor-industry-trends-2026-market-growth.webp',
+    imageAlt: 'Electric motor industry trends 2026 showing market growth and EV motor technology',
     keywords: ['electric motor industry', 'motor technology trends', 'EV motors', 'industrial motors'],
     content: `
       <h2>A Transformative Year for Electric Motors</h2>
@@ -85,7 +87,8 @@ const blogPosts = [
     author: 'Electric Motor Society',
     category: 'Membership',
     featured: false,
-    image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/blog/professional-motor-association-career-benefits-networking.webp',
+    imageAlt: 'Professional motor association membership benefits including career networking and development',
     keywords: ['professional association', 'motor engineering career', 'networking', 'professional development'],
     content: `
       <h2>The Value of Professional Community</h2>
@@ -129,7 +132,8 @@ const blogPosts = [
     author: 'Electric Motor Society',
     category: 'Research',
     featured: true,
-    image: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/blog/electric-motor-research-priorities-university-collaboration.webp',
+    imageAlt: 'Electric motor research and development priorities including university collaboration',
     keywords: ['motor research', 'electric motor R&D', 'university research', 'motor efficiency'],
     content: `
       <h2>Driving Innovation Through Focused Research</h2>
@@ -186,7 +190,8 @@ const blogPosts = [
     author: 'Electric Motor Society',
     category: 'Technology',
     featured: false,
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/blog/brushless-dc-motor-bldc-technology-guide.webp',
+    imageAlt: 'Brushless DC motor BLDC technology showing electronic commutation and efficiency',
     keywords: ['BLDC motors', 'brushless DC motors', 'motor technology', 'electronic commutation'],
     content: `
       <h2>What are Brushless DC Motors?</h2>
@@ -225,7 +230,8 @@ const blogPosts = [
     author: 'Electric Motor Society',
     category: 'Efficiency',
     featured: false,
-    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/blog/ecm-motor-efficiency-variable-speed-control-hvac.webp',
+    imageAlt: 'ECM electronically commutated motor efficiency and variable speed control for HVAC',
     keywords: ['ECM motors', 'motor efficiency', 'variable speed motors', 'HVAC motors'],
     content: `
       <h2>Understanding ECM Motors</h2>
