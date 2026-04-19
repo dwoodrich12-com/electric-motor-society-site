@@ -5,11 +5,12 @@ This project now includes a local automation runner for weekly EMS blog publishi
 - Script: `scripts/ems-blog-automation.mjs`
 
 ## What it does
-1. Reads the latest EMS blog post from `GET /api/blog/posts?limit=1`
+1. Reads the latest EMS blog post from canonical file-backed content (`content/blog-posts.json`) and falls back to the live API only if needed
 2. Uses OpenAI to pick the next continuity-aware topic
 3. Uses OpenAI to generate a 600-800 word HTML article
 4. Attempts to generate an image
-5. Publishes via `POST /api/blog/posts` with `BLOG_API_KEY`
+5. Writes the new post into `content/blog-posts.json` in canonical `{ posts: [...] }` format
+6. Prints the next step to commit/push so Render redeploys with the new content
 
 ## Required environment variables
 Loaded from local secrets files if present:

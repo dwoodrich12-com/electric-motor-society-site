@@ -8,9 +8,9 @@ const router = Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Blog posts file path - in production this is in the content folder
+// Blog posts file path - content folder is copied to dist during build
 const BLOG_POSTS_PATH = process.env.BLOG_POSTS_PATH || 
-  path.resolve(__dirname, '../../content/blog-posts.json');
+  path.resolve(__dirname, 'content/blog-posts.json');
 
 // Blog API key for automated posting
 const BLOG_API_KEY = process.env.BLOG_API_KEY || '';

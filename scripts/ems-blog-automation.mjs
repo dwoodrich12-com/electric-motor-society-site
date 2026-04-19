@@ -226,8 +226,32 @@ async function main() {
     author: DEFAULT_AUTHOR
   };
 
-  console.log('[ems-blog] creating post:', payload.title);
-  const result = await fetchJson(`${EMS_BASE_URL}/api/blog/posts`, {
+  const store = readCanonicalBlogFile();
+  const posts = Array.isArray(store.posts) ? store.posts : [];
+  if (posts.find((p) => p.slug === slug)) {
+    throw new Error(`Slug already exists in content/blog-posts.json: ${slug}`);
+  }
+  posts.unshift({
+    ...payload,
+    date: new Date().toISOString().split('T')[0]
+  });
+  posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  writeCanonicalBlogFile(posts);
+
+  console.log('[ems-blog] wrote canonical blog file:', JSON.stringify({
+    title: payload.title,
+    slug,
+    category: payload.category,
+    path: BLOG_CONTENT_PATH
+  }, null, 2));
+  console.log('[ems-blog] next step: commit/push repo so Render redeploys with the new content');
+}
+
+main().catch((err) => {
+  console.error('[ems-blog] failed:', err.message);
+  process.exit(1);
+});
+st result = await fetchJson(`${EMS_BASE_URL}/api/blog/posts`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
