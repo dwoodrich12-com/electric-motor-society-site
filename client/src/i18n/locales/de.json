@@ -1,12 +1,12 @@
 {
   "nav": {
-    "home": "Startseite",
+    "home": "Start",
     "sponsors": "Sponsoren",
     "members": "Mitglieder",
-    "universities": "Universitäten",
-    "motorQuote": "Motorangebot",
+    "universities": "Unis",
+    "motorQuote": "Angebot",
     "blog": "Blog",
-    "join": "EMS Beitreten"
+    "join": "Beitreten"
   },
   "home": {
     "hero": {

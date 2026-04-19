@@ -1,12 +1,12 @@
 {
   "nav": {
     "home": "Inicio",
-    "sponsors": "Patrocinadores",
+    "sponsors": "Sponsors",
     "members": "Miembros",
     "universities": "Universidades",
-    "motorQuote": "Cotización de Motor",
+    "motorQuote": "Cotización",
     "blog": "Blog",
-    "join": "Únete a EMS"
+    "join": "Únete"
   },
   "home": {
     "hero": {
