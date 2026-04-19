@@ -1,0 +1,161 @@
+{
+  "nav": {
+    "home": "Home",
+    "sponsors": "Sponsors",
+    "members": "Members",
+    "universities": "Universities",
+    "motorQuote": "Motor Quote",
+    "blog": "Blog",
+    "join": "Join EMS"
+  },
+  "home": {
+    "hero": {
+      "title": "Powering the Future of Electric Motors",
+      "subtitle": "A professional community dedicated to advancing electric motor technology and connecting industry leaders worldwide.",
+      "cta": "Join the Society",
+      "ctaSecondary": "Learn More"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "description": "The Electric Motor Society unites engineers, researchers, manufacturers, and innovators to accelerate the development and adoption of electric motor technology across all industries."
+    },
+    "stats": {
+      "members": "Members",
+      "countries": "Countries",
+      "partners": "Industry Partners",
+      "universities": "University Partners"
+    },
+    "benefits": {
+      "title": "Why Join EMS?",
+      "networking": {
+        "title": "Professional Networking",
+        "description": "Connect with leading experts, researchers, and industry professionals in the electric motor field."
+      },
+      "research": {
+        "title": "Research Collaboration",
+        "description": "Access cutting-edge research and collaborate on groundbreaking motor technology projects."
+      },
+      "resources": {
+        "title": "Technical Resources",
+        "description": "Get access to technical papers, standards, and best practices in motor engineering."
+      },
+      "events": {
+        "title": "Events & Workshops",
+        "description": "Participate in conferences, webinars, and hands-on workshops led by industry experts."
+      }
+    }
+  },
+  "sponsors": {
+    "hero": {
+      "title": "Become a Sponsor",
+      "subtitle": "Partner with the Electric Motor Society to shape the future of motor technology and connect with industry leaders."
+    },
+    "tiers": {
+      "supporting": {
+        "title": "Supporting",
+        "price": "$2,500/month",
+        "features": ["Logo on website", "Newsletter mention", "Event recognition", "Member directory listing"]
+      },
+      "strategic": {
+        "title": "Strategic",
+        "price": "$5,000/month",
+        "features": ["All Supporting benefits", "Speaking opportunities", "Research collaboration access", "Premium event placement"]
+      },
+      "flagship": {
+        "title": "Flagship",
+        "price": "$7,500/month",
+        "features": ["All Strategic benefits", "Board advisory seat", "Exclusive research partnerships", "Custom collaboration programs"]
+      }
+    },
+    "cta": "Become a Sponsor"
+  },
+  "members": {
+    "hero": {
+      "title": "Membership",
+      "subtitle": "Join a global community of electric motor professionals and advance your career."
+    },
+    "tiers": {
+      "monthly": {
+        "title": "Monthly",
+        "price": "$25/month"
+      },
+      "quarterly": {
+        "title": "Silver Quarterly",
+        "price": "$100/quarter"
+      },
+      "yearly": {
+        "title": "Elite Yearly",
+        "price": "$500/year"
+      }
+    },
+    "benefits": {
+      "title": "Member Benefits",
+      "access": "Access to member resources",
+      "events": "Discounted event tickets",
+      "networking": "Professional networking",
+      "directory": "Member directory listing",
+      "newsletter": "Monthly newsletter"
+    },
+    "cta": "Join Now"
+  },
+  "universities": {
+    "hero": {
+      "title": "University Partnerships",
+      "subtitle": "Collaborate with EMS on research, talent development, and technology transfer."
+    },
+    "benefits": {
+      "research": "Joint research projects",
+      "funding": "Access to industry funding",
+      "internships": "Student internship programs",
+      "equipment": "Equipment partnerships"
+    },
+    "cta": "Partner With Us"
+  },
+  "motorQuote": {
+    "hero": {
+      "title": "Motor Quote Request",
+      "subtitle": "Get a professional quote for your custom electric motor requirements."
+    },
+    "form": {
+      "name": "Full Name",
+      "email": "Email",
+      "organization": "Organization",
+      "motorType": "Motor Type",
+      "powerRating": "Power Rating",
+      "voltage": "Voltage",
+      "speed": "Speed (RPM)",
+      "specifications": "Additional Specifications",
+      "message": "Message / Project Details",
+      "attachment": "Attach Specifications",
+      "submit": "Submit Quote Request"
+    }
+  },
+  "blog": {
+    "title": "Electric Motor Blog",
+    "subtitle": "Insights, technical articles, and industry news about electric motor technology.",
+    "readMore": "Read More",
+    "allPosts": "All Posts",
+    "subscribe": "Subscribe",
+    "newsletter": {
+      "title": "Stay Updated",
+      "description": "Subscribe to our newsletter for the latest articles and industry insights.",
+      "placeholder": "Enter your email"
+    }
+  },
+  "footer": {
+    "description": "Advancing electric motor technology through collaboration, research, and professional development.",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "followUs": "Follow Us",
+    "copyright": "© 2026 Electric Motor Society. All rights reserved."
+  },
+  "common": {
+    "learnMore": "Learn More",
+    "getStarted": "Get Started",
+    "contactUs": "Contact Us",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success!"
+  }
+}

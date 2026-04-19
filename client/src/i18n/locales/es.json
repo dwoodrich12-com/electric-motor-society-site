@@ -1,0 +1,161 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "sponsors": "Patrocinadores",
+    "members": "Miembros",
+    "universities": "Universidades",
+    "motorQuote": "Cotización de Motor",
+    "blog": "Blog",
+    "join": "Únete a EMS"
+  },
+  "home": {
+    "hero": {
+      "title": "Impulsando el Futuro de los Motores Eléctricos",
+      "subtitle": "Una comunidad profesional dedicada a avanzar la tecnología de motores eléctricos y conectar líderes de la industria en todo el mundo.",
+      "cta": "Únete a la Sociedad",
+      "ctaSecondary": "Más Información"
+    },
+    "mission": {
+      "title": "Nuestra Misión",
+      "description": "La Sociedad de Motores Eléctricos une a ingenieros, investigadores, fabricantes e innovadores para acelerar el desarrollo y la adopción de tecnología de motores eléctricos en todas las industrias."
+    },
+    "stats": {
+      "members": "Miembros",
+      "countries": "Países",
+      "partners": "Socios de la Industria",
+      "universities": "Universidades Asociadas"
+    },
+    "benefits": {
+      "title": "¿Por Qué Unirse a EMS?",
+      "networking": {
+        "title": "Networking Profesional",
+        "description": "Conéctate con expertos líderes, investigadores y profesionales de la industria en el campo de los motores eléctricos."
+      },
+      "research": {
+        "title": "Colaboración en Investigación",
+        "description": "Accede a investigaciones de vanguardia y colabora en proyectos innovadores de tecnología de motores."
+      },
+      "resources": {
+        "title": "Recursos Técnicos",
+        "description": "Obtén acceso a documentos técnicos, estándares y mejores prácticas en ingeniería de motores."
+      },
+      "events": {
+        "title": "Eventos y Talleres",
+        "description": "Participa en conferencias, webinars y talleres prácticos dirigidos por expertos de la industria."
+      }
+    }
+  },
+  "sponsors": {
+    "hero": {
+      "title": "Conviértete en Patrocinador",
+      "subtitle": "Asóciate con la Sociedad de Motores Eléctricos para dar forma al futuro de la tecnología de motores y conectar con líderes de la industria."
+    },
+    "tiers": {
+      "supporting": {
+        "title": "Apoyo",
+        "price": "$2,500/mes",
+        "features": ["Logo en el sitio web", "Mención en boletín", "Reconocimiento en eventos", "Listado en directorio"]
+      },
+      "strategic": {
+        "title": "Estratégico",
+        "price": "$5,000/mes",
+        "features": ["Todos los beneficios de Apoyo", "Oportunidades para hablar", "Acceso a colaboración en investigación", "Ubicación premium en eventos"]
+      },
+      "flagship": {
+        "title": "Principal",
+        "price": "$7,500/mes",
+        "features": ["Todos los beneficios Estratégicos", "Asiento consultivo en la junta", "Asociaciones de investigación exclusivas", "Programas de colaboración personalizados"]
+      }
+    },
+    "cta": "Conviértete en Patrocinador"
+  },
+  "members": {
+    "hero": {
+      "title": "Membresía",
+      "subtitle": "Únete a una comunidad global de profesionales de motores eléctricos y avanza en tu carrera."
+    },
+    "tiers": {
+      "monthly": {
+        "title": "Mensual",
+        "price": "$25/mes"
+      },
+      "quarterly": {
+        "title": "Trimestral Plata",
+        "price": "$100/trimestre"
+      },
+      "yearly": {
+        "title": "Anual Élite",
+        "price": "$500/año"
+      }
+    },
+    "benefits": {
+      "title": "Beneficios de Membresía",
+      "access": "Acceso a recursos para miembros",
+      "events": "Descuentos en eventos",
+      "networking": "Networking profesional",
+      "directory": "Listado en directorio de miembros",
+      "newsletter": "Boletín mensual"
+    },
+    "cta": "Únete Ahora"
+  },
+  "universities": {
+    "hero": {
+      "title": "Alianzas Universitarias",
+      "subtitle": "Colabora con EMS en investigación, desarrollo de talento y transferencia de tecnología."
+    },
+    "benefits": {
+      "research": "Proyectos de investigación conjuntos",
+      "funding": "Acceso a financiamiento de la industria",
+      "internships": "Programas de pasantías para estudiantes",
+      "equipment": "Alianzas de equipos"
+    },
+    "cta": "Asóciate Con Nosotros"
+  },
+  "motorQuote": {
+    "hero": {
+      "title": "Solicitud de Cotización de Motor",
+      "subtitle": "Obtén una cotización profesional para tus requisitos de motor eléctrico personalizado."
+    },
+    "form": {
+      "name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "organization": "Organización",
+      "motorType": "Tipo de Motor",
+      "powerRating": "Potencia",
+      "voltage": "Voltaje",
+      "speed": "Velocidad (RPM)",
+      "specifications": "Especificaciones Adicionales",
+      "message": "Mensaje / Detalles del Proyecto",
+      "attachment": "Adjuntar Especificaciones",
+      "submit": "Enviar Solicitud de Cotización"
+    }
+  },
+  "blog": {
+    "title": "Blog de Motores Eléctricos",
+    "subtitle": "Perspectivas, artículos técnicos y noticias de la industria sobre tecnología de motores eléctricos.",
+    "readMore": "Leer Más",
+    "allPosts": "Todas las Publicaciones",
+    "subscribe": "Suscribirse",
+    "newsletter": {
+      "title": "Mantente Actualizado",
+      "description": "Suscríbete a nuestro boletín para los últimos artículos y perspectivas de la industria.",
+      "placeholder": "Ingresa tu correo electrónico"
+    }
+  },
+  "footer": {
+    "description": "Avanzando la tecnología de motores eléctricos a través de colaboración, investigación y desarrollo profesional.",
+    "quickLinks": "Enlaces Rápidos",
+    "contact": "Contacto",
+    "followUs": "Síguenos",
+    "copyright": "© 2026 Electric Motor Society. Todos los derechos reservados."
+  },
+  "common": {
+    "learnMore": "Más Información",
+    "getStarted": "Comenzar",
+    "contactUs": "Contáctanos",
+    "submit": "Enviar",
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "success": "¡Éxito!"
+  }
+}

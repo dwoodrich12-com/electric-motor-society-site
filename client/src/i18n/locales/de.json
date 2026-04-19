@@ -1,0 +1,161 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "sponsors": "Sponsoren",
+    "members": "Mitglieder",
+    "universities": "Universitäten",
+    "motorQuote": "Motorangebot",
+    "blog": "Blog",
+    "join": "EMS Beitreten"
+  },
+  "home": {
+    "hero": {
+      "title": "Die Zukunft der Elektromotoren Gestalten",
+      "subtitle": "Eine professionelle Gemeinschaft, die sich der Weiterentwicklung der Elektromotortechnologie und der Vernetzung von Branchenführern weltweit widmet.",
+      "cta": "Der Gesellschaft Beitreten",
+      "ctaSecondary": "Mehr Erfahren"
+    },
+    "mission": {
+      "title": "Unsere Mission",
+      "description": "Die Electric Motor Society vereint Ingenieure, Forscher, Hersteller und Innovatoren, um die Entwicklung und Einführung von Elektromotortechnologie in allen Branchen zu beschleunigen."
+    },
+    "stats": {
+      "members": "Mitglieder",
+      "countries": "Länder",
+      "partners": "Industriepartner",
+      "universities": "Universitätspartner"
+    },
+    "benefits": {
+      "title": "Warum EMS Beitreten?",
+      "networking": {
+        "title": "Professionelles Networking",
+        "description": "Vernetzen Sie sich mit führenden Experten, Forschern und Branchenprofis im Bereich Elektromotoren."
+      },
+      "research": {
+        "title": "Forschungszusammenarbeit",
+        "description": "Erhalten Sie Zugang zu modernster Forschung und arbeiten Sie an bahnbrechenden Motorentechnologie-Projekten zusammen."
+      },
+      "resources": {
+        "title": "Technische Ressourcen",
+        "description": "Erhalten Sie Zugang zu technischen Dokumenten, Standards und Best Practices in der Motorentechnik."
+      },
+      "events": {
+        "title": "Veranstaltungen & Workshops",
+        "description": "Nehmen Sie an Konferenzen, Webinaren und praktischen Workshops teil, die von Branchenexperten geleitet werden."
+      }
+    }
+  },
+  "sponsors": {
+    "hero": {
+      "title": "Sponsor Werden",
+      "subtitle": "Partnern Sie mit der Electric Motor Society, um die Zukunft der Motorentechnologie zu gestalten und sich mit Branchenführern zu vernetzen."
+    },
+    "tiers": {
+      "supporting": {
+        "title": "Unterstützend",
+        "price": "2.500 €/Monat",
+        "features": ["Logo auf der Website", "Newsletter-Erwähnung", "Veranstaltungsanerkennung", "Mitgliederverzeichnis-Eintrag"]
+      },
+      "strategic": {
+        "title": "Strategisch",
+        "price": "5.000 €/Monat",
+        "features": ["Alle Unterstützend-Vorteile", "Redemöglichkeiten", "Zugang zur Forschungszusammenarbeit", "Premium-Eventplatzierung"]
+      },
+      "flagship": {
+        "title": "Flaggschiff",
+        "price": "7.500 €/Monat",
+        "features": ["Alle Strategisch-Vorteile", "Beiratssitz", "Exklusive Forschungspartnerschaften", "Maßgeschneiderte Kooperationsprogramme"]
+      }
+    },
+    "cta": "Sponsor Werden"
+  },
+  "members": {
+    "hero": {
+      "title": "Mitgliedschaft",
+      "subtitle": "Treten Sie einer globalen Gemeinschaft von Elektromotor-Fachleuten bei und fördern Sie Ihre Karriere."
+    },
+    "tiers": {
+      "monthly": {
+        "title": "Monatlich",
+        "price": "25 €/Monat"
+      },
+      "quarterly": {
+        "title": "Silber Vierteljährlich",
+        "price": "100 €/Quartal"
+      },
+      "yearly": {
+        "title": "Elite Jährlich",
+        "price": "500 €/Jahr"
+      }
+    },
+    "benefits": {
+      "title": "Mitgliedervorteile",
+      "access": "Zugang zu Mitgliederressourcen",
+      "events": "Ermäßigte Veranstaltungstickets",
+      "networking": "Professionelles Networking",
+      "directory": "Mitgliederverzeichnis-Eintrag",
+      "newsletter": "Monatlicher Newsletter"
+    },
+    "cta": "Jetzt Beitreten"
+  },
+  "universities": {
+    "hero": {
+      "title": "Universitätspartnerschaften",
+      "subtitle": "Arbeiten Sie mit EMS an Forschung, Talententwicklung und Technologietransfer zusammen."
+    },
+    "benefits": {
+      "research": "Gemeinsame Forschungsprojekte",
+      "funding": "Zugang zu Industriefinanzierung",
+      "internships": "Praktikumsprogramme für Studenten",
+      "equipment": "Ausrüstungspartnerschaften"
+    },
+    "cta": "Mit Uns Partnern"
+  },
+  "motorQuote": {
+    "hero": {
+      "title": "Motorangebots-Anfrage",
+      "subtitle": "Erhalten Sie ein professionelles Angebot für Ihre individuellen Elektromotor-Anforderungen."
+    },
+    "form": {
+      "name": "Vollständiger Name",
+      "email": "E-Mail",
+      "organization": "Organisation",
+      "motorType": "Motortyp",
+      "powerRating": "Leistung",
+      "voltage": "Spannung",
+      "speed": "Drehzahl (U/min)",
+      "specifications": "Zusätzliche Spezifikationen",
+      "message": "Nachricht / Projektdetails",
+      "attachment": "Spezifikationen Anhängen",
+      "submit": "Angebotsanfrage Senden"
+    }
+  },
+  "blog": {
+    "title": "Elektromotor-Blog",
+    "subtitle": "Einblicke, technische Artikel und Branchennachrichten über Elektromotortechnologie.",
+    "readMore": "Mehr Lesen",
+    "allPosts": "Alle Beiträge",
+    "subscribe": "Abonnieren",
+    "newsletter": {
+      "title": "Bleiben Sie Auf Dem Laufenden",
+      "description": "Abonnieren Sie unseren Newsletter für die neuesten Artikel und Brancheneinblicke.",
+      "placeholder": "Geben Sie Ihre E-Mail ein"
+    }
+  },
+  "footer": {
+    "description": "Förderung der Elektromotortechnologie durch Zusammenarbeit, Forschung und berufliche Entwicklung.",
+    "quickLinks": "Schnelllinks",
+    "contact": "Kontakt",
+    "followUs": "Folgen Sie Uns",
+    "copyright": "© 2026 Electric Motor Society. Alle Rechte vorbehalten."
+  },
+  "common": {
+    "learnMore": "Mehr Erfahren",
+    "getStarted": "Loslegen",
+    "contactUs": "Kontaktieren Sie Uns",
+    "submit": "Absenden",
+    "loading": "Laden...",
+    "error": "Ein Fehler ist aufgetreten",
+    "success": "Erfolg!"
+  }
+}

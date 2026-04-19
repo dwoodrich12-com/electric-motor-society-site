@@ -13,6 +13,9 @@ import Join from "./pages/Join";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 
+// Initialize i18n
+import "./i18n";
+
 function Router() {
   return (
     <Switch>

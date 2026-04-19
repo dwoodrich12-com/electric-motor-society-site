@@ -1,19 +1,22 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
 import { Menu, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/sponsors', label: 'Sponsors' },
-    { href: '/universities', label: 'Universities' },
-    { href: '/members', label: 'Members' },
-    { href: '/motor-quote', label: 'Motor Quote' },
-    { href: '/blog', label: 'Blog' },
+    { href: '/', label: t('nav.home') },
+    { href: '/sponsors', label: t('nav.sponsors') },
+    { href: '/universities', label: t('nav.universities') },
+    { href: '/members', label: t('nav.members') },
+    { href: '/motor-quote', label: t('nav.motorQuote') },
+    { href: '/blog', label: t('nav.blog') },
   ];
 
   return (
@@ -31,7 +34,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
                 <a className="text-sm font-medium text-foreground hover:text-primary transition-colors">
@@ -41,10 +44,11 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* CTA Button + Language Switcher */}
+          <div className="hidden md:flex items-center gap-3">
+            <LanguageSwitcher />
             <Link href="/join">
-              <a className="btn-primary text-sm">Join Us</a>
+              <a className="btn-primary text-sm">{t('nav.join')}</a>
             </Link>
           </div>
 
@@ -76,12 +80,15 @@ export default function Header() {
                   </a>
                 </Link>
               ))}
+              <div className="px-4 py-2">
+                <LanguageSwitcher />
+              </div>
               <Link href="/join">
                 <a
                   className="block px-4 py-2 text-sm font-medium btn-primary text-center mt-2"
                   onClick={() => setIsOpen(false)}
                 >
-                  Join Us
+                  {t('nav.join')}
                 </a>
               </Link>
             </div>
