@@ -1,8 +1,10 @@
 import { Link } from 'wouter';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function Footer() {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -24,18 +26,17 @@ export default function Footer() {
 
       if (data.success) {
         setStatus('success');
-        setMessage(data.message);
+        setMessage(t('common.success'));
         setEmail('');
       } else {
         setStatus('error');
-        setMessage(data.error || 'Failed to subscribe');
+        setMessage(data.error || t('common.error'));
       }
     } catch (error) {
       setStatus('error');
-      setMessage('Failed to subscribe. Please try again.');
+      setMessage(t('common.error'));
     }
 
-    // Reset status after 5 seconds
     setTimeout(() => {
       setStatus('idle');
       setMessage('');
@@ -54,35 +55,35 @@ export default function Footer() {
                 alt="Electric Motor Society logo"
                 className="h-8 w-8 rounded-md object-cover border border-primary-foreground/20 bg-white"
               />
-              <span className="font-bold text-lg">Electric Motor Society (EMS)</span>
+              <span className="font-bold text-lg">Electric Motor Society</span>
             </div>
             <p className="text-sm text-primary-foreground/80">
-              Founded in 2026. Bringing together professionals and enthusiasts in electric motor technology.
+              {t('footer.description')}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4">Quick Links</h3>
+            <h3 className="font-semibold mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/">
-                  <a className="hover:text-primary-foreground/80 transition-colors">Home</a>
+                  <a className="hover:text-primary-foreground/80 transition-colors">{t('nav.home')}</a>
                 </Link>
               </li>
               <li>
                 <Link href="/sponsors">
-                  <a className="hover:text-primary-foreground/80 transition-colors">Sponsors</a>
+                  <a className="hover:text-primary-foreground/80 transition-colors">{t('nav.sponsors')}</a>
                 </Link>
               </li>
               <li>
                 <Link href="/universities">
-                  <a className="hover:text-primary-foreground/80 transition-colors">Universities</a>
+                  <a className="hover:text-primary-foreground/80 transition-colors">{t('nav.universities')}</a>
                 </Link>
               </li>
               <li>
                 <Link href="/members">
-                  <a className="hover:text-primary-foreground/80 transition-colors">Members</a>
+                  <a className="hover:text-primary-foreground/80 transition-colors">{t('nav.members')}</a>
                 </Link>
               </li>
             </ul>
@@ -90,31 +91,31 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="font-semibold mb-4">Resources</h3>
+            <h3 className="font-semibold mb-4">{t('footer.contact')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/motor-quote">
-                  <a className="hover:text-primary-foreground/80 transition-colors">Motor Quote</a>
+                  <a className="hover:text-primary-foreground/80 transition-colors">{t('nav.motorQuote')}</a>
                 </Link>
               </li>
               <li>
                 <Link href="/blog">
-                  <a className="hover:text-primary-foreground/80 transition-colors">Blog</a>
+                  <a className="hover:text-primary-foreground/80 transition-colors">{t('nav.blog')}</a>
                 </Link>
               </li>
               <li>
-                <Link href="/join">
-                  <a className="hover:text-primary-foreground/80 transition-colors">Join Us</a>
-                </Link>
+                <a href="mailto:info@electricmotorsociety.com" className="hover:text-primary-foreground/80 transition-colors">
+                  info@electricmotorsociety.com
+                </a>
               </li>
             </ul>
           </div>
 
-          {/* Newsletter + Contact */}
+          {/* Newsletter */}
           <div>
-            <h3 className="font-semibold mb-4">Stay Connected</h3>
+            <h3 className="font-semibold mb-4">{t('blog.newsletter.title')}</h3>
             <p className="text-sm text-primary-foreground/80 mb-3">
-              Subscribe to our newsletter for industry updates.
+              {t('blog.newsletter.description')}
             </p>
             <form onSubmit={handleSubscribe} className="space-y-2">
               <div className="flex gap-2">
@@ -122,7 +123,7 @@ export default function Footer() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
+                  placeholder={t('blog.newsletter.placeholder')}
                   required
                   className="flex-1 px-3 py-2 text-sm rounded-md bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary-foreground/30"
                 />
@@ -134,7 +135,7 @@ export default function Footer() {
                   {status === 'loading' ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    'Join'
+                    t('blog.subscribe')
                   )}
                 </button>
               </div>
@@ -149,18 +150,13 @@ export default function Footer() {
                 </p>
               )}
             </form>
-            <div className="mt-4 text-sm">
-              <a href="mailto:info@electricmotorsociety.com" className="hover:text-primary-foreground/80 transition-colors">
-                info@electricmotorsociety.com
-              </a>
-            </div>
           </div>
         </div>
 
         {/* Divider */}
         <div className="border-t border-primary-foreground/20 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-primary-foreground/80">
-            <p>&copy; {currentYear} Electric Motor Society. All rights reserved.</p>
+            <p>{t('footer.copyright')}</p>
             <div className="flex gap-6">
               <a href="#" className="hover:text-primary-foreground transition-colors">Privacy Policy</a>
               <a href="#" className="hover:text-primary-foreground transition-colors">Terms of Service</a>
