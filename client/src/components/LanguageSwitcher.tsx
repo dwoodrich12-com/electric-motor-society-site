@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Globe, ChevronDown } from 'lucide-react';
 
 const languages = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' }
+  { code: 'en', name: 'English', short: 'EN', flag: '🇺🇸' },
+  { code: 'es', name: 'Español', short: 'ES', flag: '🇪🇸' },
+  { code: 'de', name: 'Deutsch', short: 'DE', flag: '🇩🇪' }
 ];
 
 export default function LanguageSwitcher() {
@@ -39,17 +39,19 @@ export default function LanguageSwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors text-sm"
+        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-white hover:bg-primary/5 hover:border-primary/30 transition-colors text-sm font-medium whitespace-nowrap shadow-sm"
         aria-label="Select language"
       >
-        <Globe className="w-4 h-4" />
-        <span className="hidden sm:inline">{currentLang.flag} {currentLang.name}</span>
-        <span className="sm:hidden">{currentLang.flag}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <Globe className="w-4 h-4 shrink-0" />
+        <span className="inline-flex items-center gap-1">
+          <span>{currentLang.flag}</span>
+          <span className="font-medium">{currentLang.short}</span>
+        </span>
+        <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-40 bg-white border border-border rounded-md shadow-lg z-50">
+        <div className="absolute right-0 mt-2 w-44 bg-white border border-border rounded-md shadow-lg z-50">
           {languages.map(lang => (
             <button
               key={lang.code}

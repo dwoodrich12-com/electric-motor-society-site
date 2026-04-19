@@ -22,37 +22,31 @@ export default function Header() {
   return (
     <header className="bg-white border-b border-border sticky top-0 z-50">
       <div className="container">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
+        <div className="flex items-center justify-between gap-4 h-16 md:h-20">
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
             <img
               src="/assets/ems-logo.webp"
               alt="Electric Motor Society logo"
               className="h-10 w-10 rounded-md object-cover border border-border"
             />
-            <span className="font-bold text-lg text-primary hidden sm:inline">Electric Motor Society (EMS)</span>
+            <span className="font-bold text-lg text-primary hidden lg:inline">Electric Motor Society (EMS)</span>
+            <span className="font-bold text-base text-primary hidden sm:inline lg:hidden">EMS</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-6 flex-1 justify-center min-w-0">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
-                <a className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                <a className="text-sm font-medium text-foreground hover:text-primary transition-colors whitespace-nowrap">
                   {link.label}
                 </a>
               </Link>
             ))}
           </nav>
 
-          {/* CTA Button + Language Switcher */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2 shrink-0">
             <LanguageSwitcher />
-            <Link href="/join">
-              <a className="btn-primary text-sm">{t('nav.join')}</a>
-            </Link>
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={toggleMenu}
             className="md:hidden p-2 hover:bg-secondary rounded-md transition-colors"
@@ -66,7 +60,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         {isOpen && (
           <nav className="md:hidden pb-4 border-t border-border">
             <div className="flex flex-col gap-2 pt-4">
@@ -83,14 +76,6 @@ export default function Header() {
               <div className="px-4 py-2">
                 <LanguageSwitcher />
               </div>
-              <Link href="/join">
-                <a
-                  className="block px-4 py-2 text-sm font-medium btn-primary text-center mt-2"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {t('nav.join')}
-                </a>
-              </Link>
             </div>
           </nav>
         )}

@@ -56,6 +56,9 @@ export default function Blog() {
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
+  const featuredPosts = posts.filter(post => post.featured).slice(0, 2);
+  const regularPosts = posts.filter(post => !post.featured);
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
@@ -74,14 +77,14 @@ export default function Blog() {
         {/* Category Filter */}
         <section className="py-6 border-b border-border">
           <div className="container">
-            <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-2 text-foreground/70">
                 <Filter className="w-4 h-4" />
                 <span className="text-sm font-medium">Filter:</span>
               </div>
               <button
                 onClick={() => setSelectedCategory('')}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
                   selectedCategory === '' 
                     ? 'bg-primary text-primary-foreground' 
                     : 'bg-secondary text-foreground hover:bg-secondary/80'
@@ -93,10 +96,10 @@ export default function Blog() {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                  className={`inline-flex items-center justify-center min-h-10 px-4 py-2 rounded-lg border text-sm font-semibold shadow-sm transition-all whitespace-nowrap ${
                     selectedCategory === category 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-secondary text-foreground hover:bg-secondary/80'
+                      ? 'bg-primary text-primary-foreground border-primary shadow-md' 
+                      : 'bg-white text-foreground border-border hover:border-primary/30 hover:bg-primary/5 hover:text-primary'
                   }`}
                 >
                   {category}
@@ -118,54 +121,99 @@ export default function Blog() {
                 <p className="text-foreground/70">No posts found.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {posts.map((post) => (
-                  <Link key={post.slug} href={`/blog/${post.slug}`}>
-                    <a className="group block h-full">
-                      <div className="bg-white border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
-                        {/* Image */}
-                        <div className="relative h-48 overflow-hidden bg-secondary">
-                          <img
-                            src={post.image}
-                            alt={post.imageAlt || post.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                          {post.featured && (
-                            <span className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded">
-                              Featured
-                            </span>
-                          )}
-                        </div>
+              <>
+                {featuredPosts.length > 0 && (
+                  <div className="mb-10">
+                    <div className="flex items-center justify-between mb-5">
+                      <h2 className="text-2xl font-bold text-primary">Featured Articles</h2>
+                      <span className="text-sm text-foreground/60">Latest insights from EMS</span>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {featuredPosts.map((post) => (
+                        <Link key={post.slug} href={`/blog/${post.slug}`}>
+                          <a className="group block h-full">
+                            <div className="bg-white border border-border rounded-xl overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
+                              <div className="relative h-64 overflow-hidden bg-secondary">
+                                <img
+                                  src={post.image}
+                                  alt={post.imageAlt || post.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                                <span className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
+                                  Featured
+                                </span>
+                              </div>
+                              <div className="p-6 flex flex-col flex-1">
+                                <div className="flex flex-wrap items-center gap-2 mb-3">
+                                  <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full">
+                                    {post.category}
+                                  </span>
+                                  <span className="flex items-center gap-1 text-xs text-foreground/60">
+                                    <Calendar className="w-3 h-3" />
+                                    {formatDate(post.date)}
+                                  </span>
+                                </div>
+                                <h3 className="text-2xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                                  {post.title}
+                                </h3>
+                                <p className="text-foreground/70 mb-5 flex-1">
+                                  {post.excerpt}
+                                </p>
+                                <div className="flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+                                  Read Article <ArrowRight className="w-4 h-4" />
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-                        {/* Content */}
-                        <div className="p-6 flex flex-col flex-1">
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded">
-                              {post.category}
-                            </span>
-                            <span className="flex items-center gap-1 text-xs text-foreground/60">
-                              <Calendar className="w-3 h-3" />
-                              {formatDate(post.date)}
-                            </span>
+                <div className="flex items-center justify-between mb-5">
+                  <h2 className="text-2xl font-bold text-primary">All Articles</h2>
+                  <span className="text-sm text-foreground/60">{posts.length} posts</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {regularPosts.map((post) => (
+                    <Link key={post.slug} href={`/blog/${post.slug}`}>
+                      <a className="group block h-full">
+                        <div className="bg-white border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
+                          <div className="relative h-48 overflow-hidden bg-secondary">
+                            <img
+                              src={post.image}
+                              alt={post.imageAlt || post.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
                           </div>
-
-                          <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                            {post.title}
-                          </h3>
-
-                          <p className="text-foreground/70 text-sm mb-4 flex-1">
-                            {post.excerpt}
-                          </p>
-
-                          <div className="flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
-                            Read More <ArrowRight className="w-4 h-4" />
+                          <div className="p-6 flex flex-col flex-1">
+                            <div className="flex flex-wrap items-center gap-2 mb-3">
+                              <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full">
+                                {post.category}
+                              </span>
+                              <span className="flex items-center gap-1 text-xs text-foreground/60">
+                                <Calendar className="w-3 h-3" />
+                                {formatDate(post.date)}
+                              </span>
+                            </div>
+                            <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                              {post.title}
+                            </h3>
+                            <p className="text-foreground/70 text-sm mb-4 flex-1">
+                              {post.excerpt}
+                            </p>
+                            <div className="flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+                              Read More <ArrowRight className="w-4 h-4" />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </a>
-                  </Link>
-                ))}
-              </div>
+                      </a>
+                    </Link>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </section>
