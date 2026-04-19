@@ -2,8 +2,46 @@ import { Router, Request, Response } from 'express';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
+import multer from 'multer';
 
 const router = Router();
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = process.env.UPLOAD_DIR || '/tmp/ems-uploads';
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  }
+});
+
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'text/plain',
+      'image/png',
+      'image/jpeg'
+    ];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type'));
+    }
+  }
+});
 
 // Mailchimp API configuration
 const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY || '';
@@ -283,14 +321,23 @@ https://electricmotorsociety.com`
   res.json({ success: true, message: 'University interest received' });
 });
 
-// Motor quote form
-router.post('/motor-quote', async (req: Request, res: Response) => {
-  const { name, email, organization, motorType, powerRating, voltage, speed, specifications, message, fileName } = req.body;
+// Motor quote form with file upload
+router.post('/motor-quote', upload.single('file'), async (req: Request, res: Response) => {
+  const { name, email, organization, motorType, powerRating, voltage, speed, specifications, message } = req.body;
+  const file = req.file;
   
   console.log('[FORM SUBMISSION] Motor Quote Request');
+  if (file) {
+    console.log('[FORM SUBMISSION] File attached:', file.originalname, file.size, 'bytes');
+  }
   
   // Log to file
-  logFormSubmission('motor-quote', { name, email, organization, motorType, powerRating, voltage, speed, specifications, message, fileName });
+  logFormSubmission('motor-quote', { 
+    name, email, organization, motorType, powerRating, voltage, speed, specifications, message,
+    fileName: file?.originalname || null,
+    filePath: file?.path || null,
+    fileSize: file?.size || null
+  });
   
   // Parse name
   const nameParts = (name || '').trim().split(' ');
@@ -302,10 +349,8 @@ router.post('/motor-quote', async (req: Request, res: Response) => {
     COMPANY: organization || ''
   });
 
-  // Send notification email via AgentMail
-  await sendNotificationEmail(
-    `[EMS] Motor Quote Request: ${name}`,
-    `New motor quote request received:
+  // Build email body
+  let emailBody = `New motor quote request received:
 
 Name: ${name}
 Email: ${email}
@@ -320,16 +365,31 @@ Motor Specifications:
 
 Message:
 ${message || 'No message'}
+`;
 
-File Mentioned: ${fileName || 'None'}
-(Note: File attachments are not yet supported. If a file was mentioned, please reply to the requester at the email above to request they send it directly.)
+  if (file) {
+    emailBody += `
+File Attached: ${file.originalname} (${(file.size / 1024).toFixed(1)} KB)
+Server Path: ${file.path}
+
+Note: The attachment is stored on the server. To access it, check the server logs or /tmp/ems-uploads/ directory.`;
+  } else {
+    emailBody += `
+No file attached.`;
+  }
+
+  emailBody += `
 
 Submitted: ${new Date().toISOString()}
 
 ---
 Electric Motor Society
-https://electricmotorsociety.com`
-  );
+https://electricmotorsociety.com`;
+
+  // Send notification email via AgentMail
+  // Note: AgentMail attachment support would require additional API integration
+  // For now, we notify about the file and store it on server
+  await sendNotificationEmail(`[EMS] Motor Quote Request: ${name}`, emailBody);
   
   res.json({ success: true, message: 'Motor quote request received' });
 });
