@@ -15,8 +15,8 @@ async function startServer() {
   const server = createServer(app);
 
   // Middleware
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: '2mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
   // API Routes
   app.use("/api/forms", formsRouter);
