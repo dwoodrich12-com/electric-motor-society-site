@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { ArrowRight, Calendar, Filter } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -17,6 +18,7 @@ interface BlogPost {
 }
 
 export default function Blog() {
+  const { t } = useTranslation();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -67,7 +69,7 @@ export default function Blog() {
         {/* Hero Section */}
         <section className="relative py-20 md:py-32 hero-gradient">
           <div className="container">
-            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">Electric Motor Blog</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">{t('blog.title')}</h1>
             <p className="text-lg text-foreground/80 max-w-2xl">
               Insights, technical articles, and industry news about electric motor technology, innovation, and best practices.
             </p>
@@ -90,7 +92,7 @@ export default function Blog() {
                     : 'bg-secondary text-foreground hover:bg-secondary/80'
                 }`}
               >
-                All Posts
+                {t('blog.allPosts')}
               </button>
               {categories.map(category => (
                 <button
@@ -221,9 +223,9 @@ export default function Blog() {
         {/* Newsletter CTA */}
         <section className="section-padding bg-primary text-primary-foreground">
           <div className="container max-w-2xl text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Updated</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('blog.newsletter.title')}</h2>
             <p className="text-lg text-primary-foreground/90 mb-8">
-              Subscribe to our newsletter for the latest articles, industry insights, and motor technology news.
+              {t('blog.newsletter.description')}
             </p>
             <form 
               className="flex gap-2"

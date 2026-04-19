@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export default function Universities() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     university: '',
     department: '',
@@ -50,9 +52,9 @@ export default function Universities() {
           <div className="container">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">University Collaboration</h1>
+                <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">{t('universities.hero.title')}</h1>
                 <p className="text-lg text-foreground/80">
-                  Partner with Electric Motor Society to advance motor technology research, education, and innovation through industry-academic collaboration.
+                  {t('universities.hero.subtitle')}
                 </p>
               </div>
               <div className="hidden md:block">
@@ -66,162 +68,73 @@ export default function Universities() {
           </div>
         </section>
 
-        {/* Why Collaborate */}
+        {/* Benefits */}
         <section className="section-padding">
           <div className="container">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-12 text-center">Why Collaborate with Electric Motor Society (EMS)?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-12 text-center">{t('universities.hero.title')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {[
-                {
-                  title: 'Industry Connections',
-                  description: 'Connect your research with leading manufacturers and OEM partners for real-world applications.'
-                },
-                {
-                  title: 'Funding Opportunities',
-                  description: 'Access research grants and sponsorship support for motor technology projects.'
-                },
-                {
-                  title: 'Student Engagement',
-                  description: 'Provide internship and career opportunities for students in the electric motor industry.'
-                },
-                {
-                  title: 'Knowledge Exchange',
-                  description: 'Share research findings and collaborate on cutting-edge motor technology development.'
-                }
+                { key: 'research', title: t('universities.benefits.research') },
+                { key: 'funding', title: t('universities.benefits.funding') },
+                { key: 'internships', title: t('universities.benefits.internships') },
+                { key: 'equipment', title: t('universities.benefits.equipment') }
               ].map((item, idx) => (
                 <div key={idx} className="bg-secondary/30 p-6 rounded-lg border border-border">
                   <h3 className="text-xl font-semibold text-primary mb-2">{item.title}</h3>
-                  <p className="text-foreground/70">{item.description}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Sample Project Types */}
+        {/* Form Section */}
         <section className="section-padding bg-secondary/30">
-          <div className="container">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-12 text-center">Sample Project Types</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {[
-                {
-                  title: 'BLDC Motor Optimization',
-                  description: 'Research and development of high-efficiency brushless DC motors for various applications.'
-                },
-                {
-                  title: 'Control Systems',
-                  description: 'Advanced control algorithms and electronics for motor speed and torque management.'
-                },
-                {
-                  title: 'Thermal Analysis',
-                  description: 'Thermal modeling and cooling solutions for high-performance motor applications.'
-                },
-                {
-                  title: 'Materials Research',
-                  description: 'Development of advanced materials for motor components and windings.'
-                },
-                {
-                  title: 'Energy Efficiency',
-                  description: 'Optimization of motor efficiency and power consumption reduction.'
-                },
-                {
-                  title: 'EV Propulsion',
-                  description: 'Electric motor systems for vehicle propulsion and electrification projects.'
-                }
-              ].map((project, idx) => (
-                <div key={idx} className="bg-white p-6 rounded-lg border border-border hover:shadow-lg transition-shadow">
-                  <h3 className="text-lg font-semibold text-primary mb-2">{project.title}</h3>
-                  <p className="text-foreground/70">{project.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* How Support Is Used */}
-        <section className="section-padding">
-          <div className="container">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-12 text-center">How University Support Is Used</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              {[
-                {
-                  title: 'Research Grants',
-                  description: 'Funding for motor technology research projects and student scholarships.'
-                },
-                {
-                  title: 'Equipment & Resources',
-                  description: 'Support for laboratory equipment, testing facilities, and development resources.'
-                },
-                {
-                  title: 'Networking Events',
-                  description: 'Industry conferences, workshops, and collaboration opportunities for faculty and students.'
-                }
-              ].map((item, idx) => (
-                <div key={idx} className="text-center">
-                  <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-white font-bold text-xl">{idx + 1}</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">{item.title}</h3>
-                  <p className="text-foreground/70">{item.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* University Interest Form */}
-        <section className="section-padding bg-secondary/30">
-          <div className="container max-w-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-8 text-center">University Interest Form</h2>
+          <div className="container max-w-3xl">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-8 text-center">{t('universities.cta')}</h2>
             
             {submitted && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 text-green-800">
-                <p className="font-semibold">Thank you for your interest!</p>
-                <p>We'll be in touch to discuss collaboration opportunities.</p>
+                <p className="font-semibold">{t('common.success')}</p>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg border border-border">
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">University Name *</label>
-                <input
-                  type="text"
-                  name="university"
-                  value={formData.university}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Your university name"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Department/Lab *</label>
-                <input
-                  type="text"
-                  name="department"
-                  value={formData.department}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Department or laboratory name"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Contact Name *</label>
-                <input
-                  type="text"
-                  name="contact"
-                  value={formData.contact}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Your name"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-2">University *</label>
+                  <input
+                    type="text"
+                    name="university"
+                    value={formData.university}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-2">Department/Lab</label>
+                  <input
+                    type="text"
+                    name="department"
+                    value={formData.department}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-2">Contact Name *</label>
+                  <input
+                    type="text"
+                    name="contact"
+                    value={formData.contact}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">Email *</label>
                   <input
@@ -231,41 +144,8 @@ export default function Universities() {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="your@email.com"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">Region</label>
-                  <select
-                    name="region"
-                    value={formData.region}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="">Select region</option>
-                    <option value="north-america">North America</option>
-                    <option value="europe">Europe</option>
-                    <option value="asia">Asia</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Collaboration Type</label>
-                <select
-                  name="collaborationType"
-                  value={formData.collaborationType}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="">Select collaboration type</option>
-                  <option value="research">Research Partnership</option>
-                  <option value="internship">Internship Program</option>
-                  <option value="funding">Research Funding</option>
-                  <option value="equipment">Equipment Support</option>
-                  <option value="other">Other</option>
-                </select>
               </div>
 
               <div>
@@ -276,12 +156,11 @@ export default function Universities() {
                   onChange={handleChange}
                   rows={4}
                   className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Tell us about your research interests and collaboration goals..."
                 />
               </div>
 
-              <button type="submit" className="w-full btn-primary">
-                Submit Interest Form
+              <button type="submit" className="w-full btn-primary flex items-center justify-center gap-2">
+                {t('common.submit')} <ArrowRight className="w-4 h-4" />
               </button>
             </form>
           </div>
