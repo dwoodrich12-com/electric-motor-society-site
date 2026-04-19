@@ -1,117 +1,161 @@
+import { useState, useEffect } from 'react';
 import { useRoute, Link } from 'wouter';
-import { ArrowLeft, Calendar, User } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Share2, Linkedin, Twitter } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+
+interface BlogPostData {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  author: string;
+  category: string;
+  featured: boolean;
+  image: string;
+  keywords: string[];
+  content: string;
+}
 
 export default function BlogPost() {
   const [, params] = useRoute('/blog/:slug');
   const slug = params?.slug;
+  const [post, setPost] = useState<BlogPostData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  // Sample blog posts data
-  const posts: Record<string, any> = {
-    'bldc-motors-guide': {
-      title: 'Guide to Brushless DC Motors',
-      date: 'March 12, 2026',
-      author: 'Electric Motor Society',
-      category: 'Technology',
-      image: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663421992935/mFHKDo73JJ655LVTBdqMS7/blog-bldc-motors-WF2m37CK3Yfv7jTB6VVMTZ.webp',
-      content: `
-        <h2>What are Brushless DC Motors?</h2>
-        <p>Brushless DC (BLDC) motors are electric motors powered by direct current that use electronic commutation instead of mechanical brushes. They represent a significant advancement in motor technology, offering superior efficiency, reliability, and performance compared to traditional brushed motors.</p>
+  useEffect(() => {
+    if (!slug) return;
 
-        <h2>Key Advantages of BLDC Motors</h2>
-        <p><strong>Higher Efficiency:</strong> BLDC motors typically achieve 85-90% efficiency compared to 75-80% for brushed motors, resulting in lower power consumption and reduced heat generation.</p>
-        <p><strong>Longer Lifespan:</strong> Without brushes and commutators, BLDC motors have fewer wear components, leading to extended operational life and reduced maintenance requirements.</p>
-        <p><strong>Better Performance:</strong> BLDC motors provide superior torque characteristics, faster acceleration, and smoother operation across a wide speed range.</p>
-        <p><strong>Lower Noise:</strong> Electronic commutation eliminates the brush noise associated with traditional DC motors, making BLDC motors quieter and more suitable for noise-sensitive applications.</p>
+    fetch(`/api/blog/posts/${slug}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Not found');
+        return res.json();
+      })
+      .then(data => {
+        setPost(data.post);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
+  }, [slug]);
 
-        <h2>How BLDC Motors Work</h2>
-        <p>BLDC motors use permanent magnets on the rotor and electromagnets on the stator. An electronic controller (ESC) switches the current flow to the stator windings based on rotor position feedback from Hall effect sensors or back-EMF sensing. This creates a rotating magnetic field that drives the rotor.</p>
+  // Set SEO meta tags
+  useEffect(() => {
+    if (!post) return;
 
-        <h2>Applications</h2>
-        <p>BLDC motors are used in a wide variety of applications including:</p>
-        <ul>
-          <li>Electric vehicles and e-bikes</li>
-          <li>Drones and aerial systems</li>
-          <li>Industrial automation</li>
-          <li>HVAC systems</li>
-          <li>Power tools</li>
-          <li>Computer cooling fans</li>
-          <li>Medical equipment</li>
-        </ul>
+    // Title
+    document.title = `${post.title} | Electric Motor Society`;
 
-        <h2>Conclusion</h2>
-        <p>BLDC motors represent the future of electric motor technology. Their superior efficiency, reliability, and performance make them the ideal choice for modern applications where energy efficiency and reliability are paramount.</p>
-      `
-    },
-    'ecm-motors-efficiency': {
-      title: 'ECM Motors: Efficiency and Control',
-      date: 'March 30, 2026',
-      author: 'Electric Motor Society',
-      category: 'Efficiency',
-      image: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663421992935/mFHKDo73JJ655LVTBdqMS7/blog-ecm-motors-WKK8LGZUDsGweNKiBrcsGC.webp',
-      content: `
-        <h2>Understanding ECM Motors</h2>
-        <p>Electronically Commutated Motors (ECM) are a type of brushless DC motor specifically designed for high efficiency and variable speed operation. They incorporate advanced electronic controllers that optimize motor performance based on load and operating conditions.</p>
-
-        <h2>Energy Efficiency Benefits</h2>
-        <p>ECM motors can achieve efficiency levels of 80-90%, making them ideal for applications where energy consumption is a critical concern. The electronic control allows the motor to operate at optimal efficiency across a wide range of speeds and loads.</p>
-
-        <h2>Variable Speed Control</h2>
-        <p>Unlike traditional AC motors that operate at fixed speeds, ECM motors can vary their speed electronically. This enables:</p>
-        <ul>
-          <li>Reduced energy consumption during partial load conditions</li>
-          <li>Better comfort control in HVAC applications</li>
-          <li>Extended motor life through reduced thermal stress</li>
-          <li>Quieter operation at lower speeds</li>
-        </ul>
-
-        <h2>Applications in HVAC</h2>
-        <p>ECM motors are increasingly used in HVAC systems, where they can reduce energy consumption by 30-50% compared to traditional motors. The variable speed capability allows the system to modulate airflow based on actual heating or cooling demand.</p>
-
-        <h2>Future Outlook</h2>
-        <p>As energy efficiency regulations become stricter worldwide, ECM motor adoption is expected to accelerate. Manufacturers are continuously improving control algorithms and reducing costs to make these motors more accessible for various applications.</p>
-      `
-    },
-    'motor-types-explained': {
-      title: 'Types of Electric Motors Explained',
-      date: 'March 26, 2026',
-      author: 'Electric Motor Society',
-      category: 'Education',
-      image: '/assets/ems-logo.webp',
-      content: `
-        <h2>Overview of Electric Motor Types</h2>
-        <p>Electric motors come in many varieties, each designed for specific applications and operating conditions. Understanding the differences can help you select the right motor for your needs.</p>
-
-        <h2>AC Induction Motors</h2>
-        <p>AC induction motors are the most common type of electric motor. They use alternating current to create a rotating magnetic field that induces current in the rotor, producing torque. They are robust, reliable, and relatively inexpensive, making them ideal for industrial applications.</p>
-
-        <h2>DC Brushed Motors</h2>
-        <p>Traditional DC motors use brushes and a commutator to switch current direction. While they offer good speed control and torque characteristics, they require more maintenance due to brush wear.</p>
-
-        <h2>Brushless DC Motors</h2>
-        <p>BLDC motors eliminate brushes by using electronic commutation. They offer higher efficiency, longer lifespan, and better performance, making them increasingly popular in modern applications.</p>
-
-        <h2>Stepper Motors</h2>
-        <p>Stepper motors move in discrete steps and are ideal for precise positioning applications. They are commonly used in 3D printers, CNC machines, and automation equipment.</p>
-
-        <h2>Synchronous Motors</h2>
-        <p>Synchronous motors rotate at a speed synchronized with the AC line frequency. They are used in applications requiring precise speed control and high power factor.</p>
-
-        <h2>Choosing the Right Motor</h2>
-        <p>When selecting a motor, consider factors such as power requirements, speed range, efficiency, maintenance needs, and cost. Each motor type has its strengths and is suited for different applications.</p>
-      `
+    // Meta description
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head.appendChild(metaDesc);
     }
+    metaDesc.setAttribute('content', post.excerpt);
+
+    // Keywords
+    let metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (!metaKeywords) {
+      metaKeywords = document.createElement('meta');
+      metaKeywords.setAttribute('name', 'keywords');
+      document.head.appendChild(metaKeywords);
+    }
+    metaKeywords.setAttribute('content', post.keywords?.join(', ') || '');
+
+    // Open Graph
+    const setOgTag = (property: string, content: string) => {
+      let tag = document.querySelector(`meta[property="${property}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('property', property);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', content);
+    };
+
+    setOgTag('og:title', post.title);
+    setOgTag('og:description', post.excerpt);
+    setOgTag('og:image', post.image);
+    setOgTag('og:url', `https://electricmotorsociety.com/blog/${post.slug}`);
+    setOgTag('og:type', 'article');
+
+    // Twitter Card
+    const setTwitterTag = (name: string, content: string) => {
+      let tag = document.querySelector(`meta[name="${name}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('name', name);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', content);
+    };
+
+    setTwitterTag('twitter:card', 'summary_large_image');
+    setTwitterTag('twitter:title', post.title);
+    setTwitterTag('twitter:description', post.excerpt);
+    setTwitterTag('twitter:image', post.image);
+
+    // Cleanup on unmount
+    return () => {
+      document.title = 'Electric Motor Society';
+    };
+  }, [post]);
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
-  const post = posts[slug || ''];
+  const shareUrl = typeof window !== 'undefined' 
+    ? `https://electricmotorsociety.com/blog/${slug}`
+    : '';
 
-  if (!post) {
+  const shareOnTwitter = () => {
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(post?.title || '')}&url=${encodeURIComponent(shareUrl)}`,
+      '_blank'
+    );
+  };
+
+  const shareOnLinkedIn = () => {
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
+      '_blank'
+    );
+  };
+
+  if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-white">
         <Header />
         <main className="flex-1 container py-20">
-          <p className="text-center text-foreground/70">Post not found</p>
+          <p className="text-center text-foreground/70">Loading...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <div className="min-h-screen flex flex-col bg-white">
+        <Header />
+        <main className="flex-1 container py-20">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-foreground mb-4">Post Not Found</h1>
+            <p className="text-foreground/70 mb-8">The article you're looking for doesn't exist or has been moved.</p>
+            <Link href="/blog">
+              <a className="btn-primary inline-flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Blog
+              </a>
+            </Link>
+          </div>
         </main>
         <Footer />
       </div>
@@ -125,13 +169,30 @@ export default function BlogPost() {
       <main className="flex-1">
         {/* Back Button */}
         <div className="bg-secondary/30 border-b border-border">
-          <div className="container py-4">
+          <div className="container py-4 flex justify-between items-center">
             <Link href="/blog">
               <a className="flex items-center gap-2 text-primary hover:gap-3 transition-all font-semibold">
                 <ArrowLeft className="w-4 h-4" />
                 Back to Blog
               </a>
             </Link>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-foreground/60 mr-2">Share:</span>
+              <button
+                onClick={shareOnTwitter}
+                className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
+                title="Share on Twitter"
+              >
+                <Twitter className="w-4 h-4" />
+              </button>
+              <button
+                onClick={shareOnLinkedIn}
+                className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
+                title="Share on LinkedIn"
+              >
+                <Linkedin className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -153,7 +214,7 @@ export default function BlogPost() {
               <div className="flex flex-wrap gap-6 text-foreground/70">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
-                  <span>{post.date}</span>
+                  <span>{formatDate(post.date)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4" />
@@ -168,10 +229,31 @@ export default function BlogPost() {
             {/* Article Body */}
             <div className="prose prose-lg max-w-none">
               <div
-                className="text-foreground/80 space-y-4"
+                className="text-foreground/80 space-y-4 
+                  [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mt-8 [&_h2]:mb-4
+                  [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mt-6 [&_h3]:mb-3
+                  [&_p]:mb-4 [&_p]:leading-relaxed
+                  [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_ul]:space-y-2
+                  [&_li]:text-foreground/80
+                  [&_a]:text-primary [&_a]:underline [&_a]:hover:no-underline
+                  [&_strong]:text-foreground [&_strong]:font-semibold"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
             </div>
+
+            {/* Tags/Keywords */}
+            {post.keywords && post.keywords.length > 0 && (
+              <div className="mt-8 pt-8 border-t border-border">
+                <h3 className="text-sm font-semibold text-foreground mb-3">Related Topics:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {post.keywords.map((keyword, idx) => (
+                    <span key={idx} className="text-xs bg-secondary text-foreground/70 px-3 py-1 rounded-full">
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </article>
 
@@ -187,6 +269,50 @@ export default function BlogPost() {
                 View All Articles
               </a>
             </Link>
+          </div>
+        </section>
+
+        {/* Newsletter CTA */}
+        <section className="section-padding bg-primary text-primary-foreground">
+          <div className="container max-w-2xl text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Don't Miss an Update</h2>
+            <p className="text-lg text-primary-foreground/90 mb-8">
+              Subscribe to get the latest articles and industry insights delivered to your inbox.
+            </p>
+            <form 
+              className="flex gap-2"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+                try {
+                  const res = await fetch('/api/mailchimp/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                  });
+                  if (res.ok) {
+                    alert('Thanks for subscribing!');
+                    form.reset();
+                  } else {
+                    alert('Subscription failed. Please try again.');
+                  }
+                } catch {
+                  alert('Subscription failed. Please try again.');
+                }
+              }}
+            >
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                className="flex-1 px-4 py-3 rounded-md text-foreground focus:outline-none"
+                required
+              />
+              <button type="submit" className="bg-white text-primary hover:bg-primary-foreground px-6 py-3 rounded-md font-semibold transition-colors">
+                Subscribe
+              </button>
+            </form>
           </div>
         </section>
       </main>

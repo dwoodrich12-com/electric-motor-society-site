@@ -1,36 +1,59 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
-import { ArrowRight, Calendar } from 'lucide-react';
+import { ArrowRight, Calendar, Filter } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  category: string;
+  featured: boolean;
+  image: string;
+  author: string;
+}
+
 export default function Blog() {
-  const posts = [
-    {
-      slug: 'bldc-motors-guide',
-      title: 'Guide to Brushless DC Motors',
-      excerpt: 'Learn about BLDC motor technology, advantages, applications, and how they compare to traditional brushed motors.',
-      date: 'March 12, 2026',
-      category: 'Technology',
-      image: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663421992935/mFHKDo73JJ655LVTBdqMS7/blog-bldc-motors-WF2m37CK3Yfv7jTB6VVMTZ.webp'
-    },
-    {
-      slug: 'ecm-motors-efficiency',
-      title: 'ECM Motors: Efficiency and Control',
-      excerpt: 'Explore electronically commutated motors and how advanced control systems enable variable speed operation and energy savings.',
-      date: 'March 30, 2026',
-      category: 'Efficiency',
-      image: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663421992935/mFHKDo73JJ655LVTBdqMS7/blog-ecm-motors-WKK8LGZUDsGweNKiBrcsGC.webp'
-    },
-    {
-      slug: 'motor-types-explained',
-      title: 'Types of Electric Motors Explained',
-      excerpt: 'A comprehensive overview of different electric motor types including AC, DC, stepper, and specialty motors for various applications.',
-      date: 'March 26, 2026',
-      category: 'Education',
-      // Using local EMS logo image as a stable placeholder for now
-      image: '/assets/ems-logo.webp'
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch posts
+    fetch(`/api/blog/posts${selectedCategory ? `?category=${selectedCategory}` : ''}`)
+      .then(res => res.json())
+      .then(data => {
+        setPosts(data.posts);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load posts:', err);
+        setLoading(false);
+      });
+
+    // Fetch categories
+    fetch('/api/blog/categories')
+      .then(res => res.json())
+      .then(data => setCategories(data.categories))
+      .catch(err => console.error('Failed to load categories:', err));
+  }, [selectedCategory]);
+
+  // Set page meta
+  useEffect(() => {
+    document.title = 'Electric Motor Blog | Electric Motor Society';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'Insights, technical articles, and industry news about electric motor technology, innovation, and best practices from the Electric Motor Society.');
     }
-  ];
+  }, []);
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -47,52 +70,102 @@ export default function Blog() {
           </div>
         </section>
 
+        {/* Category Filter */}
+        <section className="py-6 border-b border-border">
+          <div className="container">
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-2 text-foreground/70">
+                <Filter className="w-4 h-4" />
+                <span className="text-sm font-medium">Filter:</span>
+              </div>
+              <button
+                onClick={() => setSelectedCategory('')}
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                  selectedCategory === '' 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-secondary text-foreground hover:bg-secondary/80'
+                }`}
+              >
+                All Posts
+              </button>
+              {categories.map(category => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                    selectedCategory === category 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-secondary text-foreground hover:bg-secondary/80'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Blog Posts */}
         <section className="section-padding">
           <div className="container">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.map((post) => (
-                <Link key={post.slug} href={`/blog/${post.slug}`}>
-                  <a className="group block h-full">
-                    <div className="bg-white border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
-                      {/* Image */}
-                      <div className="relative h-48 overflow-hidden bg-secondary">
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-6 flex flex-col flex-1">
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded">
-                            {post.category}
-                          </span>
-                          <span className="flex items-center gap-1 text-xs text-foreground/60">
-                            <Calendar className="w-3 h-3" />
-                            {post.date}
-                          </span>
+            {loading ? (
+              <div className="text-center py-12">
+                <p className="text-foreground/70">Loading posts...</p>
+              </div>
+            ) : posts.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-foreground/70">No posts found.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {posts.map((post) => (
+                  <Link key={post.slug} href={`/blog/${post.slug}`}>
+                    <a className="group block h-full">
+                      <div className="bg-white border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
+                        {/* Image */}
+                        <div className="relative h-48 overflow-hidden bg-secondary">
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          {post.featured && (
+                            <span className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded">
+                              Featured
+                            </span>
+                          )}
                         </div>
 
-                        <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                          {post.title}
-                        </h3>
+                        {/* Content */}
+                        <div className="p-6 flex flex-col flex-1">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded">
+                              {post.category}
+                            </span>
+                            <span className="flex items-center gap-1 text-xs text-foreground/60">
+                              <Calendar className="w-3 h-3" />
+                              {formatDate(post.date)}
+                            </span>
+                          </div>
 
-                        <p className="text-foreground/70 text-sm mb-4 flex-1">
-                          {post.excerpt}
-                        </p>
+                          <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                            {post.title}
+                          </h3>
 
-                        <div className="flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
-                          Read More <ArrowRight className="w-4 h-4" />
+                          <p className="text-foreground/70 text-sm mb-4 flex-1">
+                            {post.excerpt}
+                          </p>
+
+                          <div className="flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+                            Read More <ArrowRight className="w-4 h-4" />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </a>
-                </Link>
-              ))}
-            </div>
+                    </a>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
@@ -103,9 +176,32 @@ export default function Blog() {
             <p className="text-lg text-primary-foreground/90 mb-8">
               Subscribe to our newsletter for the latest articles, industry insights, and motor technology news.
             </p>
-            <form className="flex gap-2">
+            <form 
+              className="flex gap-2"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+                try {
+                  const res = await fetch('/api/mailchimp/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                  });
+                  if (res.ok) {
+                    alert('Thanks for subscribing!');
+                    form.reset();
+                  } else {
+                    alert('Subscription failed. Please try again.');
+                  }
+                } catch {
+                  alert('Subscription failed. Please try again.');
+                }
+              }}
+            >
               <input
                 type="email"
+                name="email"
                 placeholder="Enter your email"
                 className="flex-1 px-4 py-3 rounded-md text-foreground focus:outline-none"
                 required
