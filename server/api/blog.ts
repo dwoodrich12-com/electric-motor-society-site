@@ -318,4 +318,115 @@ router.get('/sitemap', (req: Request, res: Response) => {
   res.json({ urls });
 });
 
+// Blog API key for automated posting
+const BLOG_API_KEY = process.env.BLOG_API_KEY || '';
+
+// Create new blog post (authenticated)
+router.post('/posts', (req: Request, res: Response) => {
+  // Check authorization
+  const authHeader = req.headers.authorization;
+  if (!BLOG_API_KEY || !authHeader || authHeader !== `Bearer ${BLOG_API_KEY}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { title, slug, excerpt, content, category, keywords, image, imageAlt, featured } = req.body;
+
+  // Validate required fields
+  if (!title || !slug || !excerpt || !content || !category) {
+    return res.status(400).json({ error: 'Missing required fields: title, slug, excerpt, content, category' });
+  }
+
+  // Check for duplicate slug
+  if (blogPosts.find(p => p.slug === slug)) {
+    return res.status(409).json({ error: 'Post with this slug already exists' });
+  }
+
+  // Create new post
+  const newPost = {
+    slug,
+    title,
+    excerpt,
+    date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+    author: 'Electric Motor Society',
+    category,
+    featured: featured || false,
+    image: image || '/assets/ems-logo.webp',
+    imageAlt: imageAlt || title,
+    keywords: keywords || [],
+    content
+  };
+
+  // Add to beginning of array (newest first)
+  blogPosts.unshift(newPost);
+
+  console.log(`[BLOG] New post created: ${title}`);
+
+  res.status(201).json({ 
+    success: true, 
+    message: 'Post created',
+    post: { ...newPost, content: undefined } // Return without content
+  });
+});
+
+// Update existing blog post (authenticated)
+router.put('/posts/:slug', (req: Request, res: Response) => {
+  // Check authorization
+  const authHeader = req.headers.authorization;
+  if (!BLOG_API_KEY || !authHeader || authHeader !== `Bearer ${BLOG_API_KEY}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { slug } = req.params;
+  const postIndex = blogPosts.findIndex(p => p.slug === slug);
+
+  if (postIndex === -1) {
+    return res.status(404).json({ error: 'Post not found' });
+  }
+
+  const { title, excerpt, content, category, keywords, image, imageAlt, featured } = req.body;
+
+  // Update fields
+  if (title) blogPosts[postIndex].title = title;
+  if (excerpt) blogPosts[postIndex].excerpt = excerpt;
+  if (content) blogPosts[postIndex].content = content;
+  if (category) blogPosts[postIndex].category = category;
+  if (keywords) blogPosts[postIndex].keywords = keywords;
+  if (image) blogPosts[postIndex].image = image;
+  if (imageAlt) blogPosts[postIndex].imageAlt = imageAlt;
+  if (featured !== undefined) blogPosts[postIndex].featured = featured;
+
+  console.log(`[BLOG] Post updated: ${slug}`);
+
+  res.json({ 
+    success: true, 
+    message: 'Post updated',
+    post: { ...blogPosts[postIndex], content: undefined }
+  });
+});
+
+// Delete blog post (authenticated)
+router.delete('/posts/:slug', (req: Request, res: Response) => {
+  // Check authorization
+  const authHeader = req.headers.authorization;
+  if (!BLOG_API_KEY || !authHeader || authHeader !== `Bearer ${BLOG_API_KEY}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { slug } = req.params;
+  const postIndex = blogPosts.findIndex(p => p.slug === slug);
+
+  if (postIndex === -1) {
+    return res.status(404).json({ error: 'Post not found' });
+  }
+
+  const deleted = blogPosts.splice(postIndex, 1)[0];
+  console.log(`[BLOG] Post deleted: ${slug}`);
+
+  res.json({ 
+    success: true, 
+    message: 'Post deleted',
+    post: { ...deleted, content: undefined }
+  });
+});
+
 export default router;
