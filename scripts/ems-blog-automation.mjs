@@ -8,6 +8,25 @@ const DEFAULT_SECRETS = [
   '/Users/mikedropp/.openclaw/workspace-hermes/config/secrets.env',
 ];
 
+const BLOG_CONTENT_PATH = path.join(ROOT, 'content', 'blog-posts.json');
+
+function readCanonicalBlogFile() {
+  if (!fs.existsSync(BLOG_CONTENT_PATH)) {
+    return { posts: [] };
+  }
+  try {
+    return JSON.parse(fs.readFileSync(BLOG_CONTENT_PATH, 'utf8'));
+  } catch (err) {
+    console.warn('[ems-blog] failed to parse canonical file, resetting:', err.message);
+    return { posts: [] };
+  }
+}
+
+function writeCanonicalBlogFile(posts) {
+  const payload = { posts };
+  fs.writeFileSync(BLOG_CONTENT_PATH, JSON.stringify(payload, null, 2));
+}
+
 function loadEnvFile(filePath) {
   if (!fs.existsSync(filePath)) return;
   const lines = fs.readFileSync(filePath, 'utf8').split(/\r?\n/);
@@ -245,13 +264,8 @@ async function main() {
     path: BLOG_CONTENT_PATH
   }, null, 2));
   console.log('[ems-blog] next step: commit/push repo so Render redeploys with the new content');
-}
 
-main().catch((err) => {
-  console.error('[ems-blog] failed:', err.message);
-  process.exit(1);
-});
-st result = await fetchJson(`${EMS_BASE_URL}/api/blog/posts`, {
+  const apiResult = await fetchJson(`${EMS_BASE_URL}/api/blog/posts`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -260,7 +274,7 @@ st result = await fetchJson(`${EMS_BASE_URL}/api/blog/posts`, {
     body: JSON.stringify(payload)
   });
 
-  console.log('[ems-blog] success:', JSON.stringify({ title: payload.title, slug, category: payload.category, api: result.message || 'ok' }, null, 2));
+  console.log('[ems-blog] success:', JSON.stringify({ title: payload.title, slug, category: payload.category, api: apiResult.message || 'ok' }, null, 2));
 }
 
 main().catch((err) => {
