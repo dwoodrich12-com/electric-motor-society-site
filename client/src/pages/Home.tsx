@@ -38,8 +38,8 @@ export default function Home() {
               </div>
               <div className="hidden md:block">
                 <img
-                  src="https://d2xsxph8kpxj0f.cloudfront.net/310519663421992935/mFHKDo73JJ655LVTBdqMS7/ems-hero-oKDaDLoEcTWfGiovxTxkxW.webp"
-                  alt="Electric Motor Cross-Section"
+                  src="/assets/blog/electric-motor-research-priorities-university-collaboration.webp"
+                  alt="Electric motor research and university collaboration"
                   className="w-full h-auto rounded-lg shadow-lg"
                 />
               </div>
