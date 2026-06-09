@@ -37,11 +37,14 @@ export default function Home() {
                 </div>
               </div>
               <div className="hidden md:block">
-                <img
-                  src="/assets/blog/electric-motor-research-priorities-university-collaboration.webp"
-                  alt="Electric motor research and university collaboration"
-                  className="w-full h-auto rounded-lg shadow-lg"
-                />
+                <div className="relative rounded-lg shadow-lg overflow-hidden bg-primary/5">
+                  <img
+                    src="/assets/blog/electric-motor-industry-trends-2026-market-growth.webp"
+                    alt="Electric motor industry visualization"
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/25 via-blue-500/10 to-cyan-400/10 pointer-events-none" />
+                </div>
               </div>
             </div>
           </div>
