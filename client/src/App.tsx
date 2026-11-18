@@ -12,6 +12,8 @@ import MotorQuote from "./pages/MotorQuote";
 import Join from "./pages/Join";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import RareEarthChecklist from "./pages/RareEarthChecklist";
+import RareEarthChecklistPrint from "./pages/RareEarthChecklistPrint";
 
 // Initialize i18n
 import "./i18n";
@@ -27,6 +29,8 @@ function Router() {
       <Route path="/join" component={Join} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/:slug" component={BlogPost} />
+      <Route path="/rare-earth-checklist/print" component={RareEarthChecklistPrint} />
+      <Route path="/rare-earth-checklist" component={RareEarthChecklist} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

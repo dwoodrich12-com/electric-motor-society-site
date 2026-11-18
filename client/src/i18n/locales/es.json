@@ -43,6 +43,12 @@
         "title": "Eventos y Talleres",
         "description": "Participa en conferencias, webinars y talleres prácticos dirigidos por expertos de la industria."
       }
+    },
+    "checklist": {
+      "eyebrow": "Gratis para ingenieros de motores",
+      "title": "Lista de exposición a tierras raras pesadas",
+      "description": "Una página sobre disprosio y terbio en los imanes que ya fabricas, el abastecimiento y las reglas de EE. UU. que empiezan en 2027.",
+      "cta": "Obtener la lista"
     }
   },
   "sponsors": {
@@ -146,6 +152,7 @@
     "description": "Avanzando la tecnología de motores eléctricos a través de colaboración, investigación y desarrollo profesional.",
     "quickLinks": "Enlaces Rápidos",
     "contact": "Contacto",
+    "checklist": "Lista de tierras raras",
     "followUs": "Síguenos",
     "copyright": "© 2026 Electric Motor Society. Todos los derechos reservados."
   },

@@ -43,6 +43,12 @@
         "title": "Events & Workshops",
         "description": "Participate in conferences, webinars, and hands-on workshops led by industry experts."
       }
+    },
+    "checklist": {
+      "eyebrow": "Free for motor engineers",
+      "title": "Heavy Rare Earth Exposure Checklist",
+      "description": "A one-page checklist on dysprosium and terbium in the magnets you already ship, magnet sourcing, and the US rules that start in 2027.",
+      "cta": "Get the checklist"
     }
   },
   "sponsors": {
@@ -146,6 +152,7 @@
     "description": "Advancing electric motor technology through collaboration, research, and professional development.",
     "quickLinks": "Quick Links",
     "contact": "Contact",
+    "checklist": "Rare earth checklist",
     "followUs": "Follow Us",
     "copyright": "© 2026 Electric Motor Society. All rights reserved."
   },

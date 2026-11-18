@@ -394,6 +394,68 @@ https://electricmotorsociety.com`;
   res.json({ success: true, message: 'Motor quote request received' });
 });
 
+// Heavy Rare Earth Exposure Checklist signup.
+// Uses the same sinks as the other EMS forms. No new vendor is added.
+//
+// Where a signup goes:
+// 1. JSON append at FORM_LOGS_PATH (default /tmp/ems-form-logs.json).
+//    On Render this disk is ephemeral, so the file is a local backup only.
+// 2. Mailchimp, tag "rare-earth-checklist", when MAILCHIMP_API_KEY and
+//    MAILCHIMP_LIST_ID are set. COMPANY is sent as a merge field, same as
+//    the member and sponsor forms. Role is not a Mailchimp field.
+// 3. A notification email via AgentMail when AGENTMAIL_API_KEY is set,
+//    from AGENTMAIL_FROM (default herman1@agentmail.to) to NOTIFICATION_EMAIL
+//    (default info@electricmotorsociety.com).
+//
+// The printable sheet is shown in the browser after this returns success.
+// Nothing emails the checklist to the visitor.
+router.post('/rare-earth-checklist', async (req: Request, res: Response) => {
+  const name = String(req.body?.name || '').trim().slice(0, 200);
+  const email = String(req.body?.email || '').trim().slice(0, 200);
+  const company = String(req.body?.company || '').trim().slice(0, 200);
+  const role = String(req.body?.role || '').trim().slice(0, 200);
+
+  if (!name || !email || !company) {
+    return res.status(400).json({ error: 'Name, email, and company are required' });
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Please provide a valid email address' });
+  }
+
+  console.log('[FORM SUBMISSION] Rare earth checklist');
+
+  logFormSubmission('rare-earth-checklist', { name, email, company, role });
+
+  const nameParts = name.split(' ');
+  const firstName = nameParts[0] || '';
+  const lastName = nameParts.slice(1).join(' ') || '';
+
+  await subscribeToMailchimp(email, firstName, lastName, ['rare-earth-checklist'], {
+    COMPANY: company,
+  });
+
+  await sendNotificationEmail(
+    `[EMS] Rare earth checklist: ${name}`,
+    `Someone requested the Heavy Rare Earth Exposure Checklist.
+
+Name: ${name}
+Email: ${email}
+Company: ${company}
+Role: ${role || 'Not provided'}
+
+The printable checklist was shown in their browser. This list does not email the checklist to them.
+
+Submitted: ${new Date().toISOString()}
+
+---
+Electric Motor Society
+https://electricmotorsociety.com/rare-earth-checklist`
+  );
+
+  res.json({ success: true, message: 'Checklist signup received' });
+});
+
 // API endpoint to get form logs (for spreadsheet sync or review)
 router.get('/logs', async (req: Request, res: Response) => {
   try {

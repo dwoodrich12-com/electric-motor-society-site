@@ -45,6 +45,7 @@ async function startServer() {
       { loc: "/motor-quote", priority: "0.7", changefreq: "monthly" },
       { loc: "/join", priority: "0.8", changefreq: "monthly" },
       { loc: "/blog", priority: "0.9", changefreq: "weekly" },
+      { loc: "/rare-earth-checklist", priority: "0.8", changefreq: "monthly" },
     ];
 
     // Fetch blog posts for dynamic URLs
