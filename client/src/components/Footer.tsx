@@ -104,6 +104,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/rare-earth-checklist">
+                  <a className="hover:text-primary-foreground/80 transition-colors">{t('footer.checklist')}</a>
+                </Link>
+              </li>
+              <li>
                 <a href="mailto:info@electricmotorsociety.com" className="hover:text-primary-foreground/80 transition-colors">
                   info@electricmotorsociety.com
                 </a>
@@ -125,7 +130,7 @@ export default function Footer() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('blog.newsletter.placeholder')}
                   required
-                  className="flex-1 px-3 py-2 text-sm rounded-md bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary-foreground/30"
+                  className="min-w-0 flex-1 px-3 py-2 text-sm rounded-md bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary-foreground/30"
                 />
                 <button
                   type="submit"

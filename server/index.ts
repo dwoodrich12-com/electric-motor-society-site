@@ -3,7 +3,7 @@ import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import formsRouter from "./api/forms.js";
-import stripeRouter from "./api/stripe.js";
+import stripeRouter, { stripeWebhookHandler } from "./api/stripe.js";
 import mailchimpRouter from "./api/mailchimp.js";
 import blogRouter from "./api/blog.js";
 
@@ -13,6 +13,15 @@ const __dirname = path.dirname(__filename);
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // Stripe signs the raw body. This route must run before express.json().
+  app.post(
+    "/api/stripe/webhook",
+    express.raw({ type: "application/json" }),
+    (req, res) => {
+      void stripeWebhookHandler(req, res);
+    }
+  );
 
   // Middleware
   app.use(express.json({ limit: '2mb' }));
@@ -45,6 +54,7 @@ async function startServer() {
       { loc: "/motor-quote", priority: "0.7", changefreq: "monthly" },
       { loc: "/join", priority: "0.8", changefreq: "monthly" },
       { loc: "/blog", priority: "0.9", changefreq: "weekly" },
+      { loc: "/rare-earth-checklist", priority: "0.8", changefreq: "monthly" },
     ];
 
     // Fetch blog posts for dynamic URLs

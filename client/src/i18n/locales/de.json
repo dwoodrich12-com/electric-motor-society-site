@@ -43,6 +43,12 @@
         "title": "Veranstaltungen & Workshops",
         "description": "Nehmen Sie an Konferenzen, Webinaren und praktischen Workshops teil, die von Branchenexperten geleitet werden."
       }
+    },
+    "checklist": {
+      "eyebrow": "Kostenlos für Motoreningenieure",
+      "title": "Checkliste: Schwere Seltene Erden",
+      "description": "Eine Seite zu Dysprosium und Terbium in den Magneten, die Sie bereits fertigen, zur Beschaffung und zu den US-Regeln ab 2027.",
+      "cta": "Checkliste holen"
     }
   },
   "sponsors": {
@@ -62,9 +68,9 @@
         "features": ["Alle Unterstützend-Vorteile", "Redemöglichkeiten", "Zugang zur Forschungszusammenarbeit", "Premium-Eventplatzierung"]
       },
       "flagship": {
-        "title": "Flaggschiff",
-        "price": "7.500 €/Monat",
-        "features": ["Alle Strategisch-Vorteile", "Beiratssitz", "Exklusive Forschungspartnerschaften", "Maßgeschneiderte Kooperationsprogramme"]
+        "title": "Flagship-Partner",
+        "price": "Konditionen nach Vereinbarung",
+        "features": ["Ein Partner für die Gesellschaft", "Umfang und Betrag individuell vereinbart", "Gespräch vor jeder Zusage"]
       }
     },
     "cta": "Sponsor Werden"
@@ -146,6 +152,7 @@
     "description": "Förderung der Elektromotortechnologie durch Zusammenarbeit, Forschung und berufliche Entwicklung.",
     "quickLinks": "Schnelllinks",
     "contact": "Kontakt",
+    "checklist": "Seltene-Erden-Checkliste",
     "followUs": "Folgen Sie Uns",
     "copyright": "© 2026 Electric Motor Society. Alle Rechte vorbehalten."
   },
