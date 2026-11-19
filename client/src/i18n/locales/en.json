@@ -68,9 +68,9 @@
         "features": ["All Supporting benefits", "Speaking opportunities", "Research collaboration access", "Premium event placement"]
       },
       "flagship": {
-        "title": "Flagship",
-        "price": "$7,500/month",
-        "features": ["All Strategic benefits", "Board advisory seat", "Exclusive research partnerships", "Custom collaboration programs"]
+        "title": "Flagship Partner",
+        "price": "Terms by agreement",
+        "features": ["One partner for the society", "Scope and fee agreed individually", "A conversation before any commitment"]
       }
     },
     "cta": "Become a Sponsor"

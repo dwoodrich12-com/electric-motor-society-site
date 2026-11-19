@@ -68,9 +68,9 @@
         "features": ["Todos los beneficios de Apoyo", "Oportunidades para hablar", "Acceso a colaboración en investigación", "Ubicación premium en eventos"]
       },
       "flagship": {
-        "title": "Principal",
-        "price": "$7,500/mes",
-        "features": ["Todos los beneficios Estratégicos", "Asiento consultivo en la junta", "Asociaciones de investigación exclusivas", "Programas de colaboración personalizados"]
+        "title": "Socio principal",
+        "price": "Condiciones por acuerdo",
+        "features": ["Un socio para la sociedad", "Alcance y cuota acordados individualmente", "Una conversación antes de cualquier compromiso"]
       }
     },
     "cta": "Conviértete en Patrocinador"

@@ -3,7 +3,7 @@ import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import formsRouter from "./api/forms.js";
-import stripeRouter from "./api/stripe.js";
+import stripeRouter, { stripeWebhookHandler } from "./api/stripe.js";
 import mailchimpRouter from "./api/mailchimp.js";
 import blogRouter from "./api/blog.js";
 
@@ -13,6 +13,15 @@ const __dirname = path.dirname(__filename);
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // Stripe signs the raw body. This route must run before express.json().
+  app.post(
+    "/api/stripe/webhook",
+    express.raw({ type: "application/json" }),
+    (req, res) => {
+      void stripeWebhookHandler(req, res);
+    }
+  );
 
   // Middleware
   app.use(express.json({ limit: '2mb' }));

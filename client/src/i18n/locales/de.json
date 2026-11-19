@@ -68,9 +68,9 @@
         "features": ["Alle Unterstützend-Vorteile", "Redemöglichkeiten", "Zugang zur Forschungszusammenarbeit", "Premium-Eventplatzierung"]
       },
       "flagship": {
-        "title": "Flaggschiff",
-        "price": "7.500 €/Monat",
-        "features": ["Alle Strategisch-Vorteile", "Beiratssitz", "Exklusive Forschungspartnerschaften", "Maßgeschneiderte Kooperationsprogramme"]
+        "title": "Flagship-Partner",
+        "price": "Konditionen nach Vereinbarung",
+        "features": ["Ein Partner für die Gesellschaft", "Umfang und Betrag individuell vereinbart", "Gespräch vor jeder Zusage"]
       }
     },
     "cta": "Sponsor Werden"

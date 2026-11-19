@@ -82,7 +82,7 @@ function logFormSubmission(formType: string, data: Record<string, unknown>) {
 }
 
 // Helper: Subscribe email to Mailchimp with tags
-async function subscribeToMailchimp(email: string, firstName: string, lastName: string, tags: string[], mergeFields?: Record<string, string>) {
+export async function subscribeToMailchimp(email: string, firstName: string, lastName: string, tags: string[], mergeFields?: Record<string, string>) {
   if (!MAILCHIMP_API_KEY || !MAILCHIMP_LIST_ID) {
     console.log('[MAILCHIMP] Not configured, skipping subscription');
     return { success: false, reason: 'not_configured' };
@@ -148,7 +148,7 @@ async function subscribeToMailchimp(email: string, firstName: string, lastName: 
 }
 
 // Helper: Send notification email via AgentMail
-async function sendNotificationEmail(subject: string, body: string) {
+export async function sendNotificationEmail(subject: string, body: string) {
   if (!AGENTMAIL_API_KEY) {
     console.log('[AGENTMAIL] Not configured, logging only');
     console.log('='.repeat(60));
@@ -236,10 +236,11 @@ https://electricmotorsociety.com`
 router.post('/sponsor-inquiry', async (req: Request, res: Response) => {
   const { company, contact, email, phone, region, interestType, message } = req.body;
   
-  console.log('[FORM SUBMISSION] Sponsor Inquiry');
-  
-  // Log to file
-  logFormSubmission('sponsor-inquiry', { company, contact, email, phone, region, interestType, message });
+  const isFlagship = interestType === 'flagship-inquiry';
+  const formType = isFlagship ? 'flagship-inquiry' : 'sponsor-inquiry';
+  console.log(`[FORM SUBMISSION] ${formType}`);
+
+  logFormSubmission(formType, { company, contact, email, phone, region, interestType, message });
   
   // Parse contact name
   const nameParts = (contact || '').trim().split(' ');
@@ -247,15 +248,20 @@ router.post('/sponsor-inquiry', async (req: Request, res: Response) => {
   const lastName = nameParts.slice(1).join(' ') || '';
 
   // Subscribe to Mailchimp with tags
-  await subscribeToMailchimp(email, firstName, lastName, ['sponsor-inquiry', `interest-${interestType}`], {
-    COMPANY: company || '',
-    PHONE: phone || ''
-  });
+  await subscribeToMailchimp(
+    email,
+    firstName,
+    lastName,
+    isFlagship ? ['flagship-inquiry'] : ['sponsor-inquiry', `interest-${interestType || 'unspecified'}`],
+    {
+      COMPANY: company || '',
+      PHONE: phone || ''
+    }
+  );
 
-  // Send notification email via AgentMail
   await sendNotificationEmail(
-    `[EMS] Sponsor Inquiry: ${company}`,
-    `New sponsor inquiry received:
+    isFlagship ? `[EMS] Flagship inquiry: ${company}` : `[EMS] Sponsor Inquiry: ${company}`,
+    `${isFlagship ? 'New Flagship Partner inquiry received. Terms are agreed individually. No price is attached to this request.' : 'New sponsor inquiry received:'}
 
 Company: ${company}
 Contact: ${contact}
@@ -456,8 +462,31 @@ https://electricmotorsociety.com/rare-earth-checklist`
   res.json({ success: true, message: 'Checklist signup received' });
 });
 
-// API endpoint to get form logs (for spreadsheet sync or review)
+function adminTokenMatches(provided: string, expected: string) {
+  const left = Buffer.from(provided);
+  const right = Buffer.from(expected);
+  if (left.length !== right.length) return false;
+  return crypto.timingSafeEqual(left, right);
+}
+
+// Form logs include email addresses. Require ADMIN_TOKEN.
+// Unset token hides the route. A wrong token is unauthorized.
 router.get('/logs', async (req: Request, res: Response) => {
+  const expected = process.env.ADMIN_TOKEN || '';
+  if (!expected) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+
+  const authorization = req.headers.authorization;
+  const bearer = typeof authorization === 'string' && authorization.startsWith('Bearer ')
+    ? authorization.slice('Bearer '.length).trim()
+    : '';
+  const headerToken = req.headers['x-admin-token'];
+  const provided = bearer || (typeof headerToken === 'string' ? headerToken : '');
+  if (!provided || !adminTokenMatches(provided, expected)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   try {
     if (fs.existsSync(FORM_LOGS_PATH)) {
       const content = fs.readFileSync(FORM_LOGS_PATH, 'utf-8');
