@@ -10,7 +10,8 @@
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
-    "blog:auto": "node scripts/ems-blog-automation.mjs"
+    "blog:auto": "node scripts/ems-blog-automation.mjs",
+    "test:webhooks": "tsx scripts/test-stripe-webhook.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

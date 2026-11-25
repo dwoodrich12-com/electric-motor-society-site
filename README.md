@@ -1,6 +1,6 @@
 # Electric Motor Society Website
 
-A modern, responsive Next.js + Tailwind CSS website for the Electric Motor Society, featuring multiple pages, forms with server-side logging, and a blog system.
+A responsive React + Vite website for the Electric Motor Society, with an Express server for forms, Stripe Checkout, and the blog.
 
 ## Features
 
@@ -11,7 +11,7 @@ A modern, responsive Next.js + Tailwind CSS website for the Electric Motor Socie
 - **File Upload**: Motor Quote form supports file attachments (PDF, images, CAD drawings)
 - **Professional Branding**: Navy blue and white color scheme matching Electric Motor Society
 - **TypeScript**: Fully typed for better development experience
-- **Ready for Vercel**: Configured for easy deployment
+- **Render**: Production web service. Auto-deploys from `main`
 
 ## Tech Stack
 
@@ -93,12 +93,14 @@ electric-motor-society/
 
 ## Forms & API Routes
 
-All forms submit to server-side API routes that log submissions to console:
+All forms submit to server-side API routes:
 
-- `POST /api/forms/member-signup` - Member signup form
-- `POST /api/forms/sponsor-inquiry` - Sponsor inquiry form
+- `POST /api/forms/member-signup` - Member inquiry (not checkout)
+- `POST /api/forms/sponsor-inquiry` - Sponsor inquiry. `interestType: "flagship-inquiry"` is stored as a Flagship inquiry and does not start checkout
 - `POST /api/forms/university-interest` - University interest form
 - `POST /api/forms/motor-quote` - Motor quote request with file upload
+- `POST /api/forms/rare-earth-checklist` - Checklist signup
+- `GET /api/forms/logs` - Form log review. Requires `ADMIN_TOKEN` (Bearer or `X-Admin-Token`). Returns 404 when the token is unset and 401 when it does not match
 
 ### Form Submission Flow
 
@@ -108,21 +110,43 @@ All forms submit to server-side API routes that log submissions to console:
 4. Success message displayed to user
 5. Form resets for next submission
 
-**Note**: Forms currently show success messages without real backend processing. The server logs all submissions to console for verification.
+Forms log to `FORM_LOGS_PATH` (default `/tmp/ems-form-logs.json`, ephemeral on Render), subscribe the address in Mailchimp when that integration is configured, and send a notice through AgentMail when `AGENTMAIL_API_KEY` is set.
 
 ## Environment Variables
 
-For Vercel deployment, add these environment variables:
+Set these on the Render service. Do not commit values.
 
 ```
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_SECRET_KEY=sk_test_...
-NEXT_PUBLIC_PAYPAL_CLIENT_ID=...
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_MEMBER_MONTHLY=price_...
+STRIPE_PRICE_MEMBER_QUARTERLY=price_...
+STRIPE_PRICE_MEMBER_YEARLY=price_...
+STRIPE_PRICE_SUPPORTING=price_...
+STRIPE_PRICE_STRATEGIC=price_...
 MAILCHIMP_API_KEY=...
 MAILCHIMP_LIST_ID=...
+AGENTMAIL_API_KEY=...
+AGENTMAIL_FROM=inbox@example.com
+NOTIFICATION_EMAIL=info@electricmotorsociety.com
+ADMIN_TOKEN=long-random-string
 ```
 
-**Current Status**: These are placeholders for future integration. Forms currently show UI stubs without real payment processing.
+`STRIPE_PRICE_FLAGSHIP` is unused. Flagship has no checkout button and no public price. Leave the existing Stripe price in place.
+
+If `STRIPE_SECRET_KEY` is empty, the process still boots and checkout routes return 503. Membership and Supporting/Strategic checkout use Stripe Checkout Sessions. Supporting and Strategic are monthly prices with a 12-month commitment recorded in Checkout and subscription metadata (`commitment_months`, `commitment_start`, `commitment_end`). The subscription is not wrapped in a Subscription Schedule.
+
+## Stripe webhook
+
+After this is deployed, add one endpoint in the Stripe Dashboard (Developers → Webhooks). Do not create or edit products or prices.
+
+- URL: `https://electricmotorsociety.com/api/stripe/webhook`
+- Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
+- Copy the signing secret into Render as `STRIPE_WEBHOOK_SECRET`
+
+The route reads the raw body and rejects the request when the secret is missing or the signature is wrong. A completed checkout updates customer and subscription metadata, tags Mailchimp (`ems-member`, and `ems-sponsor-<tier>` for sponsors), and emails `NOTIFICATION_EMAIL` through AgentMail. Mailchimp or email failures are logged and still return 200 after the Stripe event is accepted. Set `AGENTMAIL_API_KEY` or those notices are only written to the log.
+
+`GET /api/forms/logs` stays closed until `ADMIN_TOKEN` is set. Generate a long random value and send it as `Authorization: Bearer <token>`.
 
 ## Design System
 
@@ -157,6 +181,8 @@ Blog posts are stored in `BlogPost.tsx` with sample content. To add new posts:
 1. Add post data to the `posts` object in `BlogPost.tsx`
 2. Create a new slug entry with title, date, content
 3. Content supports HTML formatting
+
+Production is the Render web service `electric-motor-society-site`, which auto-deploys from `main`. The Vercel notes below are leftover from the original scaffold.
 
 ## Deployment to Vercel
 

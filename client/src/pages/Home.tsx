@@ -87,6 +87,23 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="section-padding">
+          <div className="container">
+            <div className="max-w-4xl mx-auto rounded-lg border border-border bg-secondary/30 p-8 md:p-12">
+              <p className="text-sm font-semibold text-primary mb-2">{t('home.checklist.eyebrow')}</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t('home.checklist.title')}</h2>
+              <p className="text-lg text-foreground/80 mb-8 max-w-2xl">
+                {t('home.checklist.description')}
+              </p>
+              <Link href="/rare-earth-checklist">
+                <a className="btn-primary inline-flex items-center justify-center gap-2">
+                  {t('home.checklist.cta')} <ArrowRight className="w-4 h-4" />
+                </a>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="section-padding">
           <div className="container">
