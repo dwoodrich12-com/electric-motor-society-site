@@ -182,6 +182,25 @@ check('sponsor email records commitment end and monthly amount', calls.email.som
   body.includes('2027-11-19') && body.includes('$5,000') && body.includes('month') && body.includes('Strategic Sponsor')
 ));
 
+const premier = await postEvent(checkoutEvent('evt_premier', {
+  type: 'sponsor',
+  tier: 'premier',
+  tierName: 'Premier Sponsor',
+  amount: '7500',
+  interval: 'month',
+  commitment_months: '12',
+  commitment_start: '2026-11-25',
+  commitment_end: '2027-11-25',
+}));
+check('premier checkout returns 200', premier.status === 200);
+check('premier tags include ems-sponsor-premier', calls.mail.some((call) => call[3].includes('ems-member') && call[3].includes('ems-sponsor-premier')));
+check('premier email records commitment end and monthly amount', calls.email.some(([, body]) =>
+  body.includes('2027-11-25') && body.includes('$7,500') && body.includes('month') && body.includes('Premier Sponsor')
+));
+check('premier metadata written to subscription', calls.subs.some((item) =>
+  item.id === 'sub_evt_premier' && item.metadata.tier === 'premier' && item.metadata.commitment_months === '12' && item.metadata.amount === '7500'
+));
+
 const failed = await postEvent({
   id: 'evt_failed',
   object: 'event',
@@ -281,6 +300,13 @@ const flagship = await post('/api/stripe/create-checkout-session', JSON.stringif
   'Content-Type': 'application/json',
 });
 check('flagship checkout is rejected', flagship.status === 400, JSON.stringify(flagship.json));
+check('flagship is not a checkout tier', Array.isArray(flagship.json.validTiers) && flagship.json.validTiers.includes('premier') && !flagship.json.validTiers.includes('flagship'), JSON.stringify(flagship.json));
+
+delete process.env.STRIPE_PRICE_PREMIER;
+const premierUnpriced = await post('/api/stripe/create-checkout-session', JSON.stringify({ tier: 'premier' }), {
+  'Content-Type': 'application/json',
+});
+check('premier checkout without a price id returns 500', premierUnpriced.status === 500 && premierUnpriced.json.tier === 'premier', JSON.stringify(premierUnpriced.json));
 
 delete process.env.STRIPE_SECRET_KEY;
 const unavailable = await post('/api/stripe/create-checkout-session', JSON.stringify({ tier: 'supporting' }), {

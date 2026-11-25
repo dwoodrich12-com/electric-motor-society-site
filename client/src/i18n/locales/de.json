@@ -67,10 +67,10 @@
         "price": "5.000 €/Monat",
         "features": ["Alle Unterstützend-Vorteile", "Redemöglichkeiten", "Zugang zur Forschungszusammenarbeit", "Premium-Eventplatzierung"]
       },
-      "flagship": {
-        "title": "Flagship-Partner",
-        "price": "Konditionen nach Vereinbarung",
-        "features": ["Ein Partner für die Gesellschaft", "Umfang und Betrag individuell vereinbart", "Gespräch vor jeder Zusage"]
+      "premier": {
+        "title": "Premier",
+        "price": "7.500 €/Monat",
+        "features": ["Alle Strategisch-Vorteile", "Prominenteste Platzierung auf der Website und bei Veranstaltungen", "Zusätzliche technische Inhalte mit gemeinsamer Marke", "Präsenz in Webinaren und bei Veranstaltungen", "Anerkennung bei Studierendengruppen"]
       }
     },
     "cta": "Sponsor Werden"

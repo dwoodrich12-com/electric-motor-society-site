@@ -21,7 +21,6 @@ type TierConfig = {
   kind: 'member' | 'sponsor';
 };
 
-// Flagship is inquiry-only. Its Stripe price is intentionally unused here.
 const SPONSOR_TIERS: Record<string, TierConfig> = {
   supporting: {
     priceId: process.env.STRIPE_PRICE_SUPPORTING || '',
@@ -34,6 +33,13 @@ const SPONSOR_TIERS: Record<string, TierConfig> = {
     priceId: process.env.STRIPE_PRICE_STRATEGIC || '',
     name: 'Strategic Sponsor',
     amount: 5000,
+    interval: 'month',
+    kind: 'sponsor',
+  },
+  premier: {
+    priceId: process.env.STRIPE_PRICE_PREMIER || '',
+    name: 'Premier Sponsor',
+    amount: 7500,
     interval: 'month',
     kind: 'sponsor',
   },
