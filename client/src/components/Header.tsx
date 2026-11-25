@@ -43,7 +43,12 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-2 shrink-0">
+          <div className="hidden md:flex items-center gap-3 shrink-0">
+            <Link href="/subscribe">
+              <a className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors whitespace-nowrap">
+                {t('nav.subscribe')}
+              </a>
+            </Link>
             <LanguageSwitcher />
           </div>
 
@@ -73,6 +78,14 @@ export default function Header() {
                   </a>
                 </Link>
               ))}
+              <Link href="/subscribe">
+                <a
+                  className="block px-4 py-2 text-sm font-semibold text-primary hover:bg-secondary rounded-md transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {t('nav.subscribe')}
+                </a>
+              </Link>
               <div className="px-4 py-2">
                 <LanguageSwitcher />
               </div>

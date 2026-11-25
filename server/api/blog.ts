@@ -265,4 +265,8 @@ router.post('/reload', (req: Request, res: Response) => {
   });
 });
 
+export function getBlogPostBySlug(slug: string): BlogPost | undefined {
+  return blogPosts.find((post) => post.slug === slug);
+}
+
 export default router;

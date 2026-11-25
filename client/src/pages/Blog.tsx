@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ArrowRight, Calendar, Filter } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { formatBlogDate } from '@/lib/formatBlogDate';
 
 interface BlogPost {
   slug: string;
@@ -53,10 +54,7 @@ export default function Blog() {
     }
   }, []);
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  };
+  const formatDate = formatBlogDate;
 
   const featuredPosts = posts.filter(post => post.featured).slice(0, 2);
   const regularPosts = posts.filter(post => !post.featured);
