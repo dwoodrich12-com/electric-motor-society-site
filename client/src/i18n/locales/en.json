@@ -67,10 +67,10 @@
         "price": "$5,000/month",
         "features": ["All Supporting benefits", "Speaking opportunities", "Research collaboration access", "Premium event placement"]
       },
-      "flagship": {
-        "title": "Flagship Partner",
-        "price": "Terms by agreement",
-        "features": ["One partner for the society", "Scope and fee agreed individually", "A conversation before any commitment"]
+      "premier": {
+        "title": "Premier",
+        "price": "$7,500/month",
+        "features": ["All Strategic benefits", "Most prominent site and event placement", "Additional co-branded technical content", "Webinar and event presence", "Recognition with student chapters"]
       }
     },
     "cta": "Become a Sponsor"

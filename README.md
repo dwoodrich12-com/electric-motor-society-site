@@ -96,7 +96,7 @@ electric-motor-society/
 All forms submit to server-side API routes:
 
 - `POST /api/forms/member-signup` - Member inquiry (not checkout)
-- `POST /api/forms/sponsor-inquiry` - Sponsor inquiry. `interestType: "flagship-inquiry"` is stored as a Flagship inquiry and does not start checkout
+- `POST /api/forms/sponsor-inquiry` - Sponsor inquiry. Flagship is handled privately, not on the site. The server still accepts `interestType: "flagship-inquiry"` and does not start checkout
 - `POST /api/forms/university-interest` - University interest form
 - `POST /api/forms/motor-quote` - Motor quote request with file upload
 - `POST /api/forms/rare-earth-checklist` - Checklist signup
@@ -124,6 +124,7 @@ STRIPE_PRICE_MEMBER_QUARTERLY=price_...
 STRIPE_PRICE_MEMBER_YEARLY=price_...
 STRIPE_PRICE_SUPPORTING=price_...
 STRIPE_PRICE_STRATEGIC=price_...
+STRIPE_PRICE_PREMIER=price_...
 MAILCHIMP_API_KEY=...
 MAILCHIMP_LIST_ID=...
 AGENTMAIL_API_KEY=...
@@ -132,9 +133,11 @@ NOTIFICATION_EMAIL=info@electricmotorsociety.com
 ADMIN_TOKEN=long-random-string
 ```
 
-`STRIPE_PRICE_FLAGSHIP` is unused. Flagship has no checkout button and no public price. Leave the existing Stripe price in place.
+Flagship is handled privately, not on the site. `STRIPE_PRICE_FLAGSHIP` is unused. Leave any existing Stripe price in place.
 
-If `STRIPE_SECRET_KEY` is empty, the process still boots and checkout routes return 503. Membership and Supporting/Strategic checkout use Stripe Checkout Sessions. Supporting and Strategic are monthly prices with a 12-month commitment recorded in Checkout and subscription metadata (`commitment_months`, `commitment_start`, `commitment_end`). The subscription is not wrapped in a Subscription Schedule.
+`STRIPE_PRICE_PREMIER` is the Premier Sponsor price ($7,500/month). Set it on the Render service before Premier checkout can succeed.
+
+If `STRIPE_SECRET_KEY` is empty, the process still boots and checkout routes return 503. Membership and Supporting, Strategic, and Premier checkout use Stripe Checkout Sessions. Those three sponsor tiers are monthly prices with a 12-month commitment recorded in Checkout and subscription metadata (`commitment_months`, `commitment_start`, `commitment_end`). The subscription is not wrapped in a Subscription Schedule.
 
 ## Stripe webhook
 

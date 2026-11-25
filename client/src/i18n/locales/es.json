@@ -67,10 +67,10 @@
         "price": "$5,000/mes",
         "features": ["Todos los beneficios de Apoyo", "Oportunidades para hablar", "Acceso a colaboración en investigación", "Ubicación premium en eventos"]
       },
-      "flagship": {
-        "title": "Socio principal",
-        "price": "Condiciones por acuerdo",
-        "features": ["Un socio para la sociedad", "Alcance y cuota acordados individualmente", "Una conversación antes de cualquier compromiso"]
+      "premier": {
+        "title": "Premier",
+        "price": "$7,500/mes",
+        "features": ["Todos los beneficios de Estratégico", "Ubicación más destacada en el sitio y en eventos", "Contenido técnico adicional con marca compartida", "Presencia en seminarios web y eventos", "Reconocimiento en capítulos estudiantiles"]
       }
     },
     "cta": "Conviértete en Patrocinador"

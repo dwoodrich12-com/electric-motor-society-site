@@ -14,7 +14,6 @@ export default function Sponsors() {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
-  const [submittedFlagship, setSubmittedFlagship] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [checkoutCanceled, setCheckoutCanceled] = useState(false);
@@ -73,7 +72,6 @@ export default function Sponsors() {
       });
 
       if (response.ok) {
-        setSubmittedFlagship(formData.interestType === 'flagship-inquiry');
         setSubmitted(true);
         setFormData({ company: '', contact: '', email: '', phone: '', region: '', interestType: '', message: '' });
         setTimeout(() => setSubmitted(false), 5000);
@@ -81,11 +79,6 @@ export default function Sponsors() {
     } catch (error) {
       console.error('Form submission error:', error);
     }
-  };
-
-  const startFlagshipConversation = () => {
-    setFormData((prev) => ({ ...prev, interestType: 'flagship-inquiry' }));
-    document.getElementById('sponsor-inquiry')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const sponsorshipTiers = [
@@ -114,6 +107,19 @@ export default function Sponsors() {
         'Priority sponsor placement'
       ],
       featured: true
+    },
+    {
+      key: 'premier',
+      name: 'Premier Sponsor',
+      price: '$7,500/month',
+      commitment: '12-month commitment, billed monthly',
+      benefits: [
+        'All Strategic Sponsor benefits',
+        'Most prominent placement on the site and at events',
+        'Additional co-branded technical content',
+        'Webinar and society event presence',
+        'Recognition with student chapters'
+      ]
     }
   ];
 
@@ -260,32 +266,6 @@ export default function Sponsors() {
                   </button>
                 </div>
               ))}
-              <div className="rounded-lg border-2 border-border bg-white p-8 hover:shadow-lg transition-all">
-                <h3 className="text-2xl font-bold text-primary mb-2">Flagship Partner</h3>
-                <p className="text-lg font-semibold text-foreground mb-1">One per society, terms by agreement</p>
-                <p className="text-sm text-foreground/70 mb-6">
-                  A single anchor sponsorship. Scope, placement, and fee are agreed directly with the society.
-                </p>
-                <ul className="space-y-3 mb-8">
-                  {[
-                    'One Flagship Partner for the society',
-                    'Scope and fee agreed individually',
-                    'A conversation before any commitment'
-                  ].map((benefit) => (
-                    <li key={benefit} className="flex gap-2 items-start">
-                      <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-foreground/80">{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  type="button"
-                  className="w-full btn-primary"
-                  onClick={startFlagshipConversation}
-                >
-                  Start the conversation
-                </button>
-              </div>
             </div>
           </div>
         </section>
@@ -321,11 +301,7 @@ export default function Sponsors() {
             {submitted && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 text-green-800">
                 <p className="font-semibold">Thank you for your inquiry!</p>
-                <p>
-                  {submittedFlagship
-                    ? "We'll be in touch about a Flagship partnership. Terms are agreed individually."
-                    : "We'll be in touch shortly to discuss sponsorship opportunities."}
-                </p>
+                <p>We'll be in touch shortly to discuss sponsorship opportunities.</p>
               </div>
             )}
 
@@ -410,9 +386,9 @@ export default function Sponsors() {
                     <option value="supporting-sponsor">Supporting Sponsor</option>
                     <option value="industry-partner">Industry Partner</option>
                     <option value="strategic-sponsor">Strategic Sponsor</option>
+                    <option value="premier-sponsor">Premier Sponsor</option>
                     <option value="oem">OEM Partnership</option>
                     <option value="custom">Custom Package</option>
-                    <option value="flagship-inquiry">Flagship Partner</option>
                   </select>
                 </div>
               </div>
