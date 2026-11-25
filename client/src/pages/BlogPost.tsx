@@ -3,6 +3,7 @@ import { useRoute, Link } from 'wouter';
 import { ArrowLeft, Calendar, User, Share2, Linkedin, Twitter } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { formatBlogDate } from '@/lib/formatBlogDate';
 
 interface BlogPostData {
   slug: string;
@@ -107,10 +108,7 @@ export default function BlogPost() {
     };
   }, [post]);
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  };
+  const formatDate = formatBlogDate;
 
   const shareUrl = typeof window !== 'undefined' 
     ? `https://electricmotorsociety.com/blog/${slug}`

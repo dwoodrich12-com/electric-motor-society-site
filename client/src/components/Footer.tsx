@@ -1,47 +1,9 @@
 import { Link } from 'wouter';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import NewsletterForm from './NewsletterForm';
 
 export default function Footer() {
   const { t } = useTranslation();
-  const currentYear = new Date().getFullYear();
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [message, setMessage] = useState('');
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-
-    setStatus('loading');
-    try {
-      const response = await fetch('/api/mailchimp/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setStatus('success');
-        setMessage(t('common.success'));
-        setEmail('');
-      } else {
-        setStatus('error');
-        setMessage(data.error || t('common.error'));
-      }
-    } catch (error) {
-      setStatus('error');
-      setMessage(t('common.error'));
-    }
-
-    setTimeout(() => {
-      setStatus('idle');
-      setMessage('');
-    }, 5000);
-  };
 
   return (
     <footer className="bg-primary text-primary-foreground">
@@ -104,6 +66,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/subscribe">
+                  <a className="hover:text-primary-foreground/80 transition-colors">{t('nav.subscribe')}</a>
+                </Link>
+              </li>
+              <li>
                 <Link href="/rare-earth-checklist">
                   <a className="hover:text-primary-foreground/80 transition-colors">{t('footer.checklist')}</a>
                 </Link>
@@ -122,39 +89,7 @@ export default function Footer() {
             <p className="text-sm text-primary-foreground/80 mb-3">
               {t('blog.newsletter.description')}
             </p>
-            <form onSubmit={handleSubscribe} className="space-y-2">
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('blog.newsletter.placeholder')}
-                  required
-                  className="min-w-0 flex-1 px-3 py-2 text-sm rounded-md bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary-foreground/30"
-                />
-                <button
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="px-4 py-2 text-sm font-medium rounded-md bg-primary-foreground text-primary hover:bg-primary-foreground/90 transition-colors disabled:opacity-50"
-                >
-                  {status === 'loading' ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    t('blog.subscribe')
-                  )}
-                </button>
-              </div>
-              {status === 'success' && (
-                <p className="text-sm text-green-300 flex items-center gap-1">
-                  <CheckCircle className="w-3 h-3" /> {message}
-                </p>
-              )}
-              {status === 'error' && (
-                <p className="text-sm text-red-300 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> {message}
-                </p>
-              )}
-            </form>
+            <NewsletterForm variant="footer" />
           </div>
         </div>
 

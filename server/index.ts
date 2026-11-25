@@ -1,11 +1,16 @@
 import express from "express";
 import { createServer } from "http";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import formsRouter from "./api/forms.js";
 import stripeRouter, { stripeWebhookHandler } from "./api/stripe.js";
 import mailchimpRouter from "./api/mailchimp.js";
-import blogRouter from "./api/blog.js";
+import blogRouter, { getBlogPostBySlug } from "./api/blog.js";
+import {
+  SUBSCRIBE_PAGE_DESCRIPTION,
+  SUBSCRIBE_PAGE_TITLE,
+} from "../shared/subscribePage.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,6 +59,7 @@ async function startServer() {
       { loc: "/motor-quote", priority: "0.7", changefreq: "monthly" },
       { loc: "/join", priority: "0.8", changefreq: "monthly" },
       { loc: "/blog", priority: "0.9", changefreq: "weekly" },
+      { loc: "/subscribe", priority: "0.6", changefreq: "monthly" },
       { loc: "/rare-earth-checklist", priority: "0.8", changefreq: "monthly" },
     ];
 
@@ -103,9 +109,65 @@ Sitemap: https://electricmotorsociety.com/sitemap.xml
     res.send(robotsTxt);
   });
 
-  // Handle client-side routing - serve index.html for all routes
+  const escapeHtml = (value: string) =>
+    value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+
+  const sendSpa = (
+    res: express.Response,
+    meta?: { title: string; description: string }
+  ) => {
+    const indexPath = path.join(staticPath, "index.html");
+    if (!meta) {
+      res.sendFile(indexPath);
+      return;
+    }
+
+    const html = fs
+      .readFileSync(indexPath, "utf8")
+      .replace(/<title>[^<]*<\/title>/, () => `<title>${escapeHtml(meta.title)}</title>`)
+      .replace(
+        /<meta\s+name="description"\s+content="[^"]*"\s*\/?>/,
+        () => `<meta name="description" content="${escapeHtml(meta.description)}" />`
+      );
+    res.status(200).type("html").send(html);
+  };
+
+  // Direct loads: serve the SPA shell with the page title and description already set.
+  app.get("/subscribe", (_req, res) => {
+    sendSpa(res, {
+      title: SUBSCRIBE_PAGE_TITLE,
+      description: SUBSCRIBE_PAGE_DESCRIPTION,
+    });
+  });
+
+  app.get("/blog", (_req, res) => {
+    sendSpa(res, {
+      title: "Electric Motor Blog | Electric Motor Society",
+      description:
+        "Insights, technical articles, and industry news about electric motor technology, innovation, and best practices from the Electric Motor Society.",
+    });
+  });
+
+  app.get("/blog/:slug", (req, res) => {
+    const slug = req.params.slug;
+    const post = typeof slug === "string" ? getBlogPostBySlug(slug) : undefined;
+    if (!post) {
+      sendSpa(res);
+      return;
+    }
+    sendSpa(res, {
+      title: `${post.title} | Electric Motor Society`,
+      description: post.excerpt,
+    });
+  });
+
+  // Handle client-side routing - serve index.html for all other routes
   app.get("*", (_req, res) => {
-    res.sendFile(path.join(staticPath, "index.html"));
+    sendSpa(res);
   });
 
   const port = process.env.PORT || 3000;
