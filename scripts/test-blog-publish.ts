@@ -180,7 +180,7 @@ assert.equal(hiddenList.cache, "no-store");
 const hiddenPosts = JSON.parse(hiddenList.text) as {
   posts: { slug: string; content?: string }[];
 };
-assert.equal(hiddenPosts.posts.length, 13);
+assert.equal(hiddenPosts.posts.length, 14);
 assert.equal(
   hiddenPosts.posts.some(post => post.slug === "welcome-to-ems"),
   true
@@ -194,7 +194,7 @@ for (const spec of scheduled) {
 }
 assert.equal(
   hiddenPosts.posts.some(post => post.slug === "rare-earth-exposure"),
-  false
+  true
 );
 assert.equal("content" in (hiddenPosts.posts[0] || {}), false);
 
@@ -283,10 +283,15 @@ for (const spec of scheduled) {
   );
 }
 
-setBlogClockForTests(() => new Date("2026-12-01T05:59:59.999Z"));
+setBlogClockForTests(() => new Date("2026-11-24T05:59:59.999Z"));
 assert.equal((await get("/api/blog/posts/rare-earth-exposure")).status, 404);
-setBlogClockForTests(() => new Date("2026-12-01T06:00:00.000Z"));
-assert.equal((await get("/api/blog/posts/rare-earth-exposure")).status, 200);
+setBlogClockForTests(() => new Date("2026-11-24T06:00:00.000Z"));
+const rareEarth = await get("/api/blog/posts/rare-earth-exposure");
+assert.equal(rareEarth.status, 200);
+assert.equal(
+  (JSON.parse(rareEarth.text) as { post: { date: string } }).post.date,
+  "2026-11-24"
+);
 
 setBlogClockForTests(() => new Date("2026-12-22T06:00:00.000Z"));
 const allLive = JSON.parse((await get("/api/blog/posts")).text) as {
