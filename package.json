@@ -11,7 +11,8 @@
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "blog:auto": "node scripts/ems-blog-automation.mjs",
-    "test:webhooks": "tsx scripts/test-stripe-webhook.ts"
+    "test:webhooks": "tsx scripts/test-stripe-webhook.ts",
+    "test:blog": "tsx scripts/test-blog-publish.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

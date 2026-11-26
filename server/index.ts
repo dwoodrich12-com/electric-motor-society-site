@@ -6,7 +6,8 @@ import { fileURLToPath } from "url";
 import formsRouter from "./api/forms.js";
 import stripeRouter, { stripeWebhookHandler } from "./api/stripe.js";
 import mailchimpRouter from "./api/mailchimp.js";
-import blogRouter, { getBlogPostBySlug } from "./api/blog.js";
+import blogRouter from "./api/blog.js";
+import { handleBlogPostPage } from "./blogPage.js";
 import {
   SUBSCRIBE_PAGE_DESCRIPTION,
   SUBSCRIBE_PAGE_TITLE,
@@ -94,6 +95,7 @@ ${allUrls
   .join("\n")}
 </urlset>`;
 
+    res.set("Cache-Control", "no-store");
     res.header("Content-Type", "application/xml");
     res.send(xml);
   });
@@ -153,16 +155,7 @@ Sitemap: https://electricmotorsociety.com/sitemap.xml
   });
 
   app.get("/blog/:slug", (req, res) => {
-    const slug = req.params.slug;
-    const post = typeof slug === "string" ? getBlogPostBySlug(slug) : undefined;
-    if (!post) {
-      sendSpa(res);
-      return;
-    }
-    sendSpa(res, {
-      title: `${post.title} | Electric Motor Society`,
-      description: post.excerpt,
-    });
+    handleBlogPostPage(req, res, sendSpa);
   });
 
   // Handle client-side routing - serve index.html for all other routes

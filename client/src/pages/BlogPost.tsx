@@ -235,7 +235,8 @@ export default function BlogPost() {
                   [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_ul]:space-y-2
                   [&_li]:text-foreground/80
                   [&_a]:text-primary [&_a]:underline [&_a]:hover:no-underline
-                  [&_strong]:text-foreground [&_strong]:font-semibold"
+                  [&_strong]:text-foreground [&_strong]:font-semibold
+                  [&_em]:italic"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
             </div>
