@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { isBlogPostPublished } from '../../shared/blogPublish.js';
 
 const router = Router();
 
@@ -60,17 +61,40 @@ function savePosts(posts: BlogPost[]): boolean {
   }
 }
 
-// In-memory cache, loaded from file on startup
+// In-memory cache, loaded from file on startup. Visibility is decided per
+// request from the Chicago calendar date, so a post dated in the future stays
+// out of public responses until that date without another deploy.
 let blogPosts: BlogPost[] = loadPosts();
 console.log(`[BLOG] Loaded ${blogPosts.length} posts from file`);
 
+let clock: () => Date = () => new Date();
+
+/** Tests pin the clock. Public routes have no query override. */
+export function setBlogClockForTests(next: (() => Date) | null): void {
+  clock = next ?? (() => new Date());
+}
+
+function now(): Date {
+  return clock();
+}
+
+function publishedPosts(at: Date = now()): BlogPost[] {
+  return blogPosts.filter((post) => isBlogPostPublished(post.date, at));
+}
+
+// A cached 404 or listing would keep a post hidden after its Chicago date.
+function setBlogCache(res: Response) {
+  res.set('Cache-Control', 'no-store');
+}
+
 // Get all posts (for listing)
 router.get('/posts', (req: Request, res: Response) => {
+  setBlogCache(res);
   const category = req.query.category as string;
   const featured = req.query.featured === 'true';
   const limit = parseInt(req.query.limit as string) || undefined;
 
-  let filtered = [...blogPosts];
+  let filtered = publishedPosts();
 
   if (category) {
     filtered = filtered.filter(p => p.category.toLowerCase() === category.toLowerCase());
@@ -93,10 +117,12 @@ router.get('/posts', (req: Request, res: Response) => {
   res.json({ posts });
 });
 
-// Get single post (full content)
+// Get single post (full content). Unpublished posts use the same 404 as a
+// missing slug so the response does not reveal that a future post exists.
 router.get('/posts/:slug', (req: Request, res: Response) => {
+  setBlogCache(res);
   const { slug } = req.params;
-  const post = blogPosts.find(p => p.slug === slug);
+  const post = publishedPosts().find(p => p.slug === slug);
 
   if (!post) {
     return res.status(404).json({ error: 'Post not found' });
@@ -107,14 +133,16 @@ router.get('/posts/:slug', (req: Request, res: Response) => {
 
 // Get categories
 router.get('/categories', (req: Request, res: Response) => {
-  const categories = [...new Set(blogPosts.map(p => p.category))];
+  setBlogCache(res);
+  const categories = Array.from(new Set(publishedPosts().map(p => p.category)));
   res.json({ categories });
 });
 
 // Generate sitemap data for blog posts
 router.get('/sitemap', (req: Request, res: Response) => {
+  setBlogCache(res);
   const baseUrl = 'https://electricmotorsociety.com';
-  const urls = blogPosts.map(post => ({
+  const urls = publishedPosts().map(post => ({
     loc: `${baseUrl}/blog/${post.slug}`,
     lastmod: post.date,
     changefreq: 'monthly',
@@ -266,7 +294,7 @@ router.post('/reload', (req: Request, res: Response) => {
 });
 
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {
-  return blogPosts.find((post) => post.slug === slug);
+  return publishedPosts().find((post) => post.slug === slug);
 }
 
 export default router;
